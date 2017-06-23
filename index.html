@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<meta name="robots" content="noindex">
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+  <title>Temperature History</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- <link rel="stylesheet" type="text/css" href="toggle-switch.css"> -->
+</head>
+<style>
+  .graph-cont {
+    height: 400px;
+    width: 100%;
+  }
+
+  h4 {
+    margin-top: 1em;
+  }
+
+  footer {
+    margin-bottom: 20px;
+  }
+
+  .content img {
+    margin: 2em 0;
+  }
+
+  .range-btns-cont  {
+    display: block;
+    float:right;
+    visibility: hidden;
+    margin: 6px 6px;
+  }
+</style>
+<body>
+	
+	<div class = "container">
+
+      <div class="row">
+	      <div class="col-md-12"> 
+        <h3>Room Temperature & Thermostat</h3>
+      </div>
+      </div>
+
+    <div class="row">
+    <div class="col-md-12">
+
+      <div id="graph-cont-1" class="graph-cont">
+      </div>
+      <div>
+
+        <span id="range-btns-cont-1" class="btn-group range-btns-cont">
+            <button name="range-btn-5y" class="btn btn-default btn-mini">
+              5y
+            </button>
+            <button name="range-btn-1y" class="btn btn-default btn-mini">
+              1y
+            </button>
+            <button name="range-btn-ytd" class="btn btn-default  btn-mini">
+              YTD
+            </button>
+            <button name="range-btn-6m" class="btn btn-default btn-mini">
+              6m
+            </button>
+            <button name="range-btn-1m" class="btn btn-default  btn-mini">
+              1m
+            </button>
+            <button name="range-btn-1w" class="btn btn-default  btn-mini">
+              1w
+            </button>
+            <button name="range-btn-1d" class="btn btn-default btn-mini">
+              1d
+            </button>
+
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+    </div>
+  </div>        
+
+  <div id="btn-group-thermostat" class="btn-group" data-toggle="buttons">
+      <label class="btn btn-default">
+        <input type="radio" name="off" id="off"> off 
+      </label>
+      <label class="btn btn-default">
+        <input type="radio" name="auto" id="auto"> auto 
+      </label>
+      <label class="btn btn-default">
+        <input type="radio" name="on" id="on"> on 
+      </label>
+</div>
+
+  <!-- <div> -->
+	  <!-- <span id="range-btns-thermostat-slider" class"btn-group range-btns-cont"> -->
+		  <!-- <button name="range-btn-off" class="btn btn-default"> -->
+			  <!-- off -->
+		  <!-- </button> -->
+		  <!-- <button name="range-btn-auto" class="btn btn-default"> -->
+			  <!-- auto -->
+		  <!-- </button> -->
+		  <!-- <button name="range-btn-on" class="btn btn-default"> -->
+			 <!-- on --> 
+		  <!-- </button> -->
+	  <!-- </span> -->
+  <!-- </div> -->
+
+    <!-- <input id="off" name="state-d" type="radio"> -->
+    <!-- <label for="off" onclick="">OFF</label> -->
+
+    <!-- <input id="automatic" name="state-d" type="radio" checked="checked"> -->
+    <!--     <label for="automatic" onclick="">AUTO</label> -->
+
+    <!-- <input id="on" name="state-d" type="radio"> -->
+    <!-- <label for="on" onclick="">ON</label> -->
+
+    <!-- <a></a> -->
+  <!-- </div> -->
+
+	</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="Scripts/temp_hist.js"></script>
+  <script src="Scripts/temp_hist_provider.js"></script>
+  <script src="Scripts/temp_hist_server.js"></script>
+  <script src="Scripts/thermostat_button.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.1/dygraph-combined.js"></script> 
+<script>
+  $(document).ready(function () {
+    var pageCfg = {
+      $graphCont: $("#graph-cont-1"),
+      $rangeBtnsCont: $("#range-btns-cont-1")
+    };
+    var pageCfg2 = {
+      $rangeBtnsCont: $("#btn-group-thermostat")
+    };
+	  var thist = new temp_hist(pageCfg);
+	  thist.init();
+	  var thermo = new thermostat_button(pageCfg2);
+	  thermo.init();
+
+  });
+</script>
+
+<!-- <script type ="text/javascript"></script> -->
+
+</body>
+</html>
