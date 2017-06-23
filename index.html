@@ -79,21 +79,26 @@
 
   <div class="row">
     <div class="col-md-12">
-    </div>
-  </div>        
+        <h5>Thermostat Control</h5>
 
   <div id="btn-group-thermostat" class="btn-group" data-toggle="buttons">
-      <label class="btn btn-default">
-        <input type="radio" name="off" id="off"> off 
+      <label class="btn btn-default" id="off">
+        <!-- <input type="radio" name="off" id="off"> off --> 
+	<input type="radio"> off
       </label>
-      <label class="btn btn-default">
-        <input type="radio" name="auto" id="auto"> auto 
+      <label class="btn btn-default" id="auto">
+        <!-- <input type="radio" name="auto" id="auto"> auto --> 
+	<input type="radio"> auto
       </label>
-      <label class="btn btn-default">
-        <input type="radio" name="on" id="on"> on 
+      <label class="btn btn-default" id="on">
+        <!-- <input type="radio" name="on" id="on"> on --> 
+	<input type="radio"> on
       </label>
 </div>
 
+    </div>
+  </div>        
+  	
   <!-- <div> -->
 	  <!-- <span id="range-btns-thermostat-slider" class"btn-group range-btns-cont"> -->
 		  <!-- <button name="range-btn-off" class="btn btn-default"> -->
@@ -132,6 +137,7 @@
   <script src="Scripts/temp_hist_server.js"></script>
   <script src="Scripts/thermostat_button.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.1/dygraph-combined.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
 <script>
   $(document).ready(function () {
     var pageCfg = {

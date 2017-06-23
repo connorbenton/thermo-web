@@ -256,6 +256,7 @@
 			var graphCfg = {
 				axes: axes,
 				labels: labels,
+				ylabel: 'Temperature (F)',
 				showRangeSelector: false,
 				// interactionModel: Dygraph.Interaction.defaultModel,
 				connectSeparatedPoints: true,
@@ -264,6 +265,59 @@
 				zoomCallback: $.proxy(this._onDyZoomCallback, this),
 				digitsAfterDecimal: 2,
 				// labelsDivWidth: "275"
+				          underlayCallback: function(canvas, area, g) {
+
+            canvas.fillStyle = "rgba(230, 230, 230, 1.0)";
+
+            function highlight_period(x_start, x_end) {
+              var canvas_left_x = g.toDomXCoord(x_start);
+              var canvas_right_x = g.toDomXCoord(x_end);
+              var canvas_width = canvas_right_x - canvas_left_x;
+              canvas.fillRect(canvas_left_x, area.y, canvas_width, area.h);
+            }
+		if (g.dateWindow_ == null){
+		var min_data_x = g.getValue(0,0);
+            var max_data_x = g.getValue(g.numRows()-1,0);
+		} else {
+            var min_data_x = g.dateWindow_[0].valueOf();
+            var max_data_x = g.dateWindow_[1].valueOf();
+		}
+		var minmom = moment(min_data_x);
+		var maxmom = moment(max_data_x);
+		var windowdiff = maxmom.diff(minmom, 'days');
+
+		if (windowdiff > 14) return;
+
+            var w = minmom;
+	var wnext;					  
+            // starting before sunrise is a special case
+            var times = SunCalc.getTimes(w, 37.7, -122.1);
+		if (w < times.sunrise) {
+			highlight_period(w.valueOf(), times.sunrise.valueOf());
+		}
+
+            while (w < max_data_x) {
+		    wnext = w.clone().add(1, 'day');
+            times = SunCalc.getTimes(w, 37.7, -122.1);
+            var times2 = SunCalc.getTimes(wnext, 37.7, -122.1);
+              var start_x_highlight = times.sunset.valueOf();
+              var end_x_highlight = times2.sunrise.valueOf();
+              // make sure we don't try to plot outside the graph
+              if (start_x_highlight < min_data_x) {
+                start_x_highlight = min_data_x;
+              }
+              if (end_x_highlight > max_data_x) {
+                end_x_highlight = max_data_x;
+              }
+              highlight_period(start_x_highlight,end_x_highlight);
+		    // just in case the graph ends before next sunrise
+		if (wnext >= max_data_x) {
+			highlight_period(times2.sunset.valueOf(), max_data_x);
+		}
+              // calculate start of highlight for next Saturday
+              w = wnext; 
+            }
+          }
 			};
 
 			this.graph = new Dygraph(this.$graphCont.get(0), dyData, graphCfg);
