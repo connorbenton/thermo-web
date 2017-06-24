@@ -35,11 +35,9 @@ var startTimeStamp = startTimeUTC.getUTCSeconds() + startTimeUTC.getUTCMinutes()
 var endTimeUTC = dataLoadReq.endDateTm;	  
 var endTimeStamp = endTimeUTC.getUTCSeconds() + endTimeUTC.getUTCMinutes() * 100 + endTimeUTC.getUTCHours() * 10000 + endTimeUTC.getUTCDate() * 1000000 + (endTimeUTC.getUTCMonth()+1) * 100000000 + endTimeUTC.getUTCFullYear() * 10000000000; 	  
 
-AWS.config.update({ accessKeyId: 'AKIAIFUKTLKXUMSVHXSA',
-                secretAccessKey: '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' });
-AWS.config.region = 'us-west-1'; // Region
+// AWS.config.region = 'us-west-1'; // Region
 
-var dynamodb = new AWS.DynamoDB.DocumentClient();
+		// var dynamodb = new dynamo.DocumentClient();
 
 var paramsdygraph = {
     TableName: tableUsed,
@@ -52,9 +50,15 @@ var paramsdygraph = {
 		"#dt": "Date"
 	},
     ExpressionAttributeValues: {
-        ":therm": "Thermostat_01",
-	    ":dt1": startTimeStamp,
-	    ":dt2": endTimeStamp
+        ":therm": {
+		S: "Thermostat_01"
+	},
+	":dt1": {
+		N: startTimeStamp.toString()
+	},
+	":dt2": {
+		N: endTimeStamp.toString()
+	}
     }
 };
 var that = this;
@@ -67,9 +71,12 @@ dynamodb.query(paramsdygraph, function(err, data) {
 //         console.log(JSON.stringify(data, null, 3));
 
        data.Items.forEach(function(item) {
-         curtime3 = moment.utc(item.Date.toString(), "YYYYMMDDHHmmss");
+         // curtime3 = moment.utc(item.Date.toString(), "YYYYMMDDHHmmss");
+         curtime3 = moment.utc(item.Date.N, "YYYYMMDDHHmmss");
          curtime3.local();
-         dataPoints.push({x: new Date(curtime3.format("YYYY/MM/DD HH:mm:ss")), temp: item.temp, humidity: item.humidity, heaterState: item.heaterState, pidOutput: item.pidOutput});
+	       // var b = parseFloat(item.temp.N);
+         // dataPoints.push({x: new Date(curtime3.format("YYYY/MM/DD HH:mm:ss")), temp: parseFloat(item.temp.N), humidity: parseFloat(item.humidity.N), heaterState: parseFloat(item.heaterState.N), pidOutput: parseFloat(item.pidOutput.N)});
+         dataPoints.push({x: curtime3, temp: parseFloat(item.temp.N), humidity: parseFloat(item.humidity.N), heaterState: parseFloat(item.heaterState.N), pidOutput: parseFloat(item.pidOutput.N)});
        });
 	dataPoints = dataPoints.reverse();
 	that._onDataLoad.call(that, dataLoadReq, dataPoints);

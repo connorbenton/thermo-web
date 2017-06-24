@@ -9,16 +9,16 @@
 		  
 		  this._setupButtons();
 
-		AWS.config.update({ accessKeyId: 'AKIAIFUKTLKXUMSVHXSA',
-                secretAccessKey: '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' });
-		AWS.config.region = 'us-west-1'; // Region
-		var dynamodb = new AWS.DynamoDB.DocumentClient();
+		// AWS.config.region = 'us-west-1'; // Region
+		// var dynamodb = new dynamo.DocumentClient();
 		
 		var paramsInitializeSlider = {
 		    TableName: 'HeaterManualState',
 		    KeyConditionExpression: "Id = :resourceFromSite",
 		    ExpressionAttributeValues: {
-			":resourceFromSite": "Website"
+			":resourceFromSite": {
+				S: "Website"
+			}
 		    }
 		};
 
@@ -28,7 +28,7 @@
 			console.log(JSON.stringify(err, null, 3));
 		      else
 		      data.Items.forEach(function(item) {
-			InitialSlider = item.WebsiteHeaterState;
+			InitialSlider = item.WebsiteHeaterState.S;
 		      });
 		  if (InitialSlider == "1") {
 			  
@@ -68,20 +68,24 @@
 
 	var that = this;
 
-		AWS.config.update({ accessKeyId: 'AKIAIFUKTLKXUMSVHXSA',
-                secretAccessKey: '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' });
-		AWS.config.region = 'us-west-1'; // Region
-		var dynamodb = new AWS.DynamoDB.DocumentClient();
+		// AWS.config.region = 'us-west-1'; // Region
+		// var dynamodb = new dynamo.DocumentClient();
 
 		var paramsOnUpdate = {
 		    TableName: 'HeaterManualState',
 		    Key: {
-		      "Id":"Website",
-		      "Date": 1
+		      "Id": {
+			      S: "Website"
+		      },
+		      "Date": {
+			      N: "1"
+		      }
 		    },
 		    UpdateExpression: "SET WebsiteHeaterState = :resourceFromSite",
 		    ExpressionAttributeValues: {
-			":resourceFromSite": "3"
+			":resourceFromSite": {
+				S: "3"
+			}
 		    },
 		    ReturnValues: "ALL_NEW"
 		};
@@ -89,12 +93,18 @@
 		var paramsAutoUpdate = {
 		    TableName: 'HeaterManualState',
 		    Key: {
-		      "Id":"Website",
-		      "Date": 1
+		      "Id": {
+			      S: "Website"
+		      },
+		      "Date": {
+			      N: "1"
+		      }
 		    },
 		    UpdateExpression: "SET WebsiteHeaterState = :resourceFromSite",
 		    ExpressionAttributeValues: {
-			":resourceFromSite": "2"
+			":resourceFromSite": {
+				S: "2"
+			}
 		    },
 		    ReturnValues: "ALL_NEW"
 		};
@@ -102,12 +112,18 @@
 		var paramsOffUpdate = {
 		    TableName: 'HeaterManualState',
 		    Key: {
-		      "Id":"Website",
-		      "Date": 1
+		      "Id": {
+			      S: "Website"
+		      },
+		      "Date": {
+			      N: "1"
+		      }
 		    },
 		    UpdateExpression: "SET WebsiteHeaterState = :resourceFromSite",
 		    ExpressionAttributeValues: {
-			":resourceFromSite": "1"
+			":resourceFromSite": {
+				S: "1"
+			}
 		    },
 		    ReturnValues: "ALL_NEW"
 		};
@@ -119,7 +135,7 @@
 			$(this).addClass('active');
 			if (rangeType == "off") {
 
-			 dynamodb.update(paramsOffUpdate, function(err, data) {
+			 dynamodb.updateItem(paramsOffUpdate, function(err, data) {
 			    if (err)
 				console.log(JSON.stringify(err, null, 2));
 			    else
@@ -128,7 +144,7 @@
 					
 			} else if (rangeType == "auto") {
 
-			 dynamodb.update(paramsAutoUpdate, function(err, data) {
+			 dynamodb.updateItem(paramsAutoUpdate, function(err, data) {
 			    if (err)
 				console.log(JSON.stringify(err, null, 2));
 			    else
@@ -138,7 +154,7 @@
 			
 			} else if (rangeType == "on") {
 
-			 dynamodb.update(paramsOnUpdate, function(err, data) {
+			 dynamodb.updateItem(paramsOnUpdate, function(err, data) {
 			    if (err)
 				console.log(JSON.stringify(err, null, 2));
 			    else

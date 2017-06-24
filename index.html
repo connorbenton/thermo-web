@@ -2,6 +2,13 @@
 <meta name="robots" content="noindex">
 <html lang="en">
 <head>
+  <link rel="apple-touch-icon" sizes="180x180" href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/Images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/Images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/Images/favicon-16x16.png">
+  <link rel="manifest" href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/Images/manifest.json">
+  <link rel="mask-icon" href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/Images/safari-pinned-tab.svg" color="#5bbad5">
+  <!-- <link rel="shortcut icon" type='image/x-icon' href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/favicon.ico"> -->
+  <meta name="theme-color" content="#ff0000">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
   <title>Temperature History</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -143,11 +150,29 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.1/dygraph-combined.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
 <script>
+AWS.config.region = 'us-east-1'; // Region
+AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+  IdentityPoolId: 'us-east-1:8ad5bccf-36bf-4e06-8c4a-de15f73ceab6'
+  // region: 'us-east-1'
+});
+AWS.config.credentials.get(function(){
+
+    // Credentials will be available when this function is called.
+    var accessKeyId = AWS.config.credentials.accessKeyId;
+    var secretAccessKey = AWS.config.credentials.secretAccessKey;
+    var sessionToken = AWS.config.credentials.sessionToken;
+
+});
+// AWS.config.credentials = new AWS.Credentials(accessKeyId, secreteAccessKey, sessionToken);
+// AWS.config.region = 'us-west-1'; // Region
+var dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
+// var dynamodb = dyanmo.DocumentClient();
   $(document).ready(function () {
     var pageCfg = {
       $graphCont: $("#graph-cont-1"),
       $rangeBtnsCont: $("#range-btns-cont-1")
     };
+	  
     var pageCfg2 = {
       $rangeBtnsCont: $("#btn-group-thermostat")
     };
