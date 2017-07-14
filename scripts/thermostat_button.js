@@ -23,6 +23,7 @@
 		};
 
 		var InitialSlider;	
+if (dynamodb != null) {
 		  dynamodb.query(paramsInitializeSlider, function(err, data) {
 		      if (err)
 			console.log(JSON.stringify(err, null, 3));
@@ -61,6 +62,10 @@
 
 		//       console.log(JSON.stringify(InitialSlider, null, 3));
 		  });
+} else {
+			  var $btnInput = that.$rangeBtnsCont.find("#auto");
+			  $btnInput.addClass('active');
+}	
 
 		}
 	
@@ -133,6 +138,8 @@
 		      var rangeType = evt.target.id.toString();
 			that.$rangeBtnsCont.children().removeClass('active');
 			$(this).addClass('active');
+			
+if (dynamodb != null) {
 			if (rangeType == "off") {
 
 			 dynamodb.updateItem(paramsOffUpdate, function(err, data) {
@@ -161,6 +168,7 @@
 				console.log(JSON.stringify(data, null, 2));
 			});
 			}
+}
 		});
 	}
 

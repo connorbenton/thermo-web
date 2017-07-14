@@ -135,7 +135,7 @@ li a:hover {
     <div class="col-md-12">
         <h5>Thermostat Control</h5>
 
-  <div id="btn-group-thermostat" class="btn-group" data-toggle="buttons">
+  <div style="padding:0 0 1em 0" id="btn-group-thermostat" class="btn-group" data-toggle="buttons">
       <label class="btn btn-default" id="off">
         <!-- <input type="radio" name="off" id="off"> off --> 
 	<input type="radio"> off
@@ -149,8 +149,12 @@ li a:hover {
 	<input type="radio"> on
       </label>
 </div>
+    </div>
+    </div>
 
-<form id="signin" class="navbar-form navbar-right" role="form">
+  <div class="row">
+    <div class="col-md-12">
+<form id="signin" class="form-signin" role="form" hidden>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                             <input id="username" type="username" class="form-control" name="username" value="" placeholder="Username">                                        
@@ -163,6 +167,19 @@ li a:hover {
 
                         <button type="submit" class="btn btn-default">Login</button>
                    </form>
+
+<form id="form-password" class="form-signin" hidden>
+			<span>Set a new password to continue</span>
+			<label for="inputNewPassword" class="sr-only">Password</label>
+			<input type="password" id="inputNewPassword" class="form-control" placeholder="New Password" required>
+			<button class="btn btn-default" type="submit">Change Password</button>
+		</form>
+
+		<form id='logged-in' class='form-signout' role="form" hidden>
+			<button class="btn btn-default" type="submit">Sign Out</button>
+			<span style="color:green; padding:0 10px">Logged in</span>
+			<span id="active-user"></span>
+		</form>
 
     </div>
   </div>        
@@ -178,33 +195,77 @@ li a:hover {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.5.min.js"></script>
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   <script src="/Scripts/temp_hist.js"></script>
   <script src="/Scripts/temp_hist_provider.js"></script>
   <script src="/Scripts/temp_hist_server.js"></script>
   <script src="/Scripts/thermostat_button.js"></script>
+  <script src="/Scripts/aws-cognito-sdk.min.js"></script>
+  <script src="/Scripts/amazon-cognito-identity.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.1/dygraph-combined.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
 <script>
 AWS.config.region = 'us-east-1'; // Region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-  IdentityPoolId: 'us-east-1:8ad5bccf-36bf-4e06-8c4a-de15f73ceab6'
-  // region: 'us-east-1'
-});
-AWS.config.credentials.get(function(){
-
-    // Credentials will be available when this function is called.
-    var accessKeyId = AWS.config.credentials.accessKeyId;
-    var secretAccessKey = AWS.config.credentials.secretAccessKey;
-    var sessionToken = AWS.config.credentials.sessionToken;
-
-});
+<!-- AWS.config.credentials = new AWS.CognitoIdentityCredentials({ -->
+<!--   IdentityPoolId: 'us-east-1:8ad5bccf-36bf-4e06-8c4a-de15f73ceab6' -->
+<!--   // region: 'us-east-1' -->
+<!-- }); -->
 // AWS.config.credentials = new AWS.Credentials(accessKeyId, secreteAccessKey, sessionToken);
 // AWS.config.region = 'us-west-1'; // Region
-var dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
+var dynamodb;
+var cognitoUser;
 // var dynamodb = dyanmo.DocumentClient();
   $(document).ready(function () {
+	 <!-- var dynamodb; --> 
+			    var poolData = { 
+			        UserPoolId : 'us-east-1_RJQUiedeu', // your user pool id here
+      				ClientId : 'r9rn0da6vi442upopdvi409l2' // your client id here
+			    };
+	  
+var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+    cognitoUser = userPool.getCurrentUser();
+
+    if (cognitoUser != null) {
+        cognitoUser.getSession(function(err, session) {
+            if (err) {
+                alert(err);
+                return;
+            }
+            console.log('session validity: ' + session.isValid());
+
+            // NOTE: getSession must be called to authenticate user before calling getUserAttributes
+            cognitoUser.getUserAttributes(function(err, attributes) {
+                if (err) {
+                    // Handle error
+                } else {
+                    // Do something with attributes
+                }
+            });
+
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+		IdentityPoolId: 'us-east-1:8ad5bccf-36bf-4e06-8c4a-de15f73ceab6',
+	        Logins : {
+	             'cognito-idp.us-east-1.amazonaws.com/us-east-1_RJQUiedeu' : session.getIdToken().getJwtToken()
+	                }
+            });
+
+		  dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
+<!-- dynamodb = new AWS.DynamoDB(); -->
+<!-- dynamodb.config.update({region:'us-west-1'}); -->
+
+            // Instantiate aws sdk service objects now that the credentials have been updated.
+            // example: var s3 = new AWS.S3();
+			            $('#logged-in').removeAttr('hidden');
+				document.getElementById('active-user').innerHTML = cognitoUser.username;
+				<!-- $('#signin').attr('hidden','true'); -->
+
+        });
+    } else {
+	    $('#signin').removeAttr('hidden');
+    }
+
     var pageCfg = {
       $graphCont: $("#graph-cont-1"),
       $rangeBtnsCont: $("#range-btns-cont-1")
@@ -213,12 +274,98 @@ var dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
     var pageCfg2 = {
       $rangeBtnsCont: $("#btn-group-thermostat")
     };
+	  
+	  <!-- if  (!dynamodb.config.region) { -->
+		  <!-- dynamodb.config.update({ -->
+			  <!-- region: 'us-west-1' -->
+		  <!-- }); -->
+	  <!-- } -->
+
+		  <!-- var dynamodb = new AWS.DynamoDB({region: 'us-west-1'}); -->
+
 	  var thist = new temp_hist(pageCfg);
 	  thist.init();
 	  var thermo = new thermostat_button(pageCfg2);
 	  thermo.init();
+	  
+		  $('.form-signout').on('submit',function(e) {
+			  e.preventDefault();
+			  if (cognitoUser != null) {
+			  cognitoUser.signOut();
+			  location.reload();
+			  }
+			});
 
+	  $(function() {
+		  <!-- var cognitoUser; -->
+
+
+
+$('.form-signin').on('submit',function(e) {
+		    	e.preventDefault();
+		    	var authenticationData = {
+			        Username : $('#username').val(),
+			        Password : $('#password').val()
+			    };
+			    var authenticationDetails = new AWSCognito.CognitoIdentityServiceProvider.AuthenticationDetails(authenticationData);
+			    var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+			    var userData = {
+			        Username : $('#username').val(),
+			        Pool : userPool
+			    };
+			    
+			   cognitoUser = new AWSCognito.CognitoIdentityServiceProvider.CognitoUser(userData);
+			    cognitoUser.authenticateUser(authenticationDetails, {
+			    	newPasswordRequired: function(userAttributes, requiredAttributes) {
+			            $('#form-password').removeAttr('hidden');
+			            $('#signin').css('display','none');
+			            if ($('#inputNewPassword').val() !== '') {
+			            	cognitoUser.completeNewPasswordChallenge($('#inputNewPassword').val(), [], this);
+			            }
+			        },
+			        onSuccess: function (result) {
+			            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+			                IdentityPoolId : 'us-east-1:8ad5bccf-36bf-4e06-8c4a-de15f73ceab6',
+			                Logins : {
+			                    'cognito-idp.us-east-1.amazonaws.com/us-east-1_RJQUiedeu' : result.getIdToken().getJwtToken()
+			                }
+			            });
+			            AWS.config.update({
+							region: 'us-east-1',
+							credentials: new AWS.CognitoIdentityCredentials({
+								IdentityPoolId: 'us-east-1:8ad5bccf-36bf-4e06-8c4a-de15f73ceab6',
+				                Logins : {
+				                    'cognito-idp.us-east-1.amazonaws.com/us-east-1_RJQUiedeu' : result.getIdToken().getJwtToken()
+				                }
+							})
+						});
+<!-- AWS.config.credentials.get(function(){ -->
+
+<!--     // Credentials will be available when this function is called. -->
+<!--     var accessKeyId = AWS.config.credentials.accessKeyId; -->
+<!--     var secretAccessKey = AWS.config.credentials.secretAccessKey; -->
+<!--     var sessionToken = AWS.config.credentials.sessionToken; -->
+
+<!-- }); -->
+
+		  dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
+<!-- dynamodb = new AWS.DynamoDB(); -->
+<!-- dynamodb.config.update({region:'us-west-1'}); -->
+
+				$('#signin').attr('hidden','true');
+			            $('#logged-in').removeAttr('hidden');
+				document.getElementById('active-user').innerHTML = cognitoUser.username;
+					location.reload;
+
+			        },
+			        onFailure: function(err) {
+			            alert(err);
+			        }
+			    });
+		    });
+	  });
   });
+
 </script>
 
 <!-- <script type ="text/javascript"></script> -->
