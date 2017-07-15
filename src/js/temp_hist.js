@@ -19,6 +19,8 @@
   temp_hist.prototype.init = function () {
     this.showSpinner(true);
 
+			this.$rangeBtnsCont.children().removeClass('active');
+
     this._setupRangeButtons();
 
     // Default range dates

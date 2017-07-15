@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+	  "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +17,13 @@
   "bugs": {
     "url": "https://github.com/connorbenton/thermo-web/issues"
   },
-  "homepage": "https://github.com/connorbenton/thermo-web#readme"
+  "homepage": "https://github.com/connorbenton/thermo-web#readme",
+  "devDependencies": {
+    "html-webpack-plugin": "^2.29.0",
+    "webpack": "^3.2.0",
+    "webpack-dev-server": "^2.5.1"
+  },
+  "dependencies": {
+    "amazon-cognito-identity-js": "^1.19.0"
+  }
 }

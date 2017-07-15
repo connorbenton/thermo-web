@@ -6,6 +6,7 @@
 	  thermostat_button.prototype.init = function() {
 
 		  var that = this;
+			that.$rangeBtnsCont.children().removeClass('active');
 		  
 		  this._setupButtons();
 
