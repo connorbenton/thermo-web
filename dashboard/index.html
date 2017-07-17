@@ -192,18 +192,18 @@ li a:hover {
 </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.5.min.js"></script>
+  <!-- <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.5.min.js"></script> -->
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-  <script src="/Scripts/temp_hist.js"></script>
-  <script src="/Scripts/temp_hist_provider.js"></script>
-  <script src="/Scripts/temp_hist_server.js"></script>
-  <script src="/Scripts/thermostat_button.js"></script>
-  <script src="/Scripts/aws-cognito-sdk.min.js"></script>
-  <script src="/Scripts/amazon-cognito-identity.min.js"></script>
+  <script src="/scripts/temp_hist.js"></script>
+  <script src="/scripts/temp_hist_provider.js"></script>
+  <script src="/scripts/temp_hist_server.js"></script>
+  <script src="/scripts/thermostat_button.js"></script>
+  <script src="/scripts/aws-cognito-sdk.min.js"></script>
+  <script src="/scripts/amazon-cognito-identity.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.1/dygraph-combined.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
 <script>
@@ -296,7 +296,6 @@ var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poo
 			  }
 			});
 
-	  $(function() {
 		  <!-- var cognitoUser; -->
 
 
@@ -355,7 +354,13 @@ $('.form-signin').on('submit',function(e) {
 				$('#signin').attr('hidden','true');
 			            $('#logged-in').removeAttr('hidden');
 				document.getElementById('active-user').innerHTML = cognitoUser.username;
-					location.reload;
+					<!-- location.reload; -->
+	  var thist = new temp_hist(pageCfg);
+		$("#range-btns-cont-1").children().removeClass('active');			
+	  thist.init();
+	  var thermo = new thermostat_button(pageCfg2);
+		$("#btn-group-thermostat").children().removeClass('active');			
+	  thermo.init();
 
 			        },
 			        onFailure: function(err) {
@@ -363,7 +368,6 @@ $('.form-signin').on('submit',function(e) {
 			        }
 			    });
 		    });
-	  });
   });
 
 </script>
