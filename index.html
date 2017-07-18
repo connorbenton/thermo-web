@@ -33,7 +33,7 @@
     margin: 2em 0;
   }
   
-ul {
+ul.mynavbar {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -41,11 +41,11 @@ ul {
     background-color: #333;
 }
 
-li {
+li.mynavbar {
     float: left;
 }
 
-li a {
+li.mynavbar a {
     display: block;
     color: white;
     text-align: center;
@@ -53,19 +53,19 @@ li a {
     text-decoration: none;
 }
 
-li a:hover {
+li.mynavbar a:hover {
     background-color: #111;
 	    text-decoration: none;
 		    color: white;
 }
 
-  li a:active {
+  li.mynavbar a:active {
 	  background-color: #111;
 		 text-decoration: none;
 			color: white; 
   }
   
-  li a:focus {
+  li.mynavbar a:focus {
 	  text-decoration: none;
 		  color:white;
   }
@@ -83,75 +83,14 @@ li a:hover {
 </style>
 <body>
 	
-		      <ul>
-			  <li><a class="active" href="/">Project Summary</a></li>
-			  <li><a href="/dashboard">Dashboard</a></li>
-			  <li style="float:right; font-size:16px;"><a href="mailto:connor.benton@gmail.com" style ="padding:14px 14px" class="fa fa-envelope"></a></li>
-			  <li style="float:right; font-size:16px;"><a href="https://www.github.com/connorbenton" style = "padding: 14px 14px" class="fa fa-github"></a></li>
+		      <ul class="mynavbar">
+			  <li class="mynavbar"><a class="active" href="/">Project Summary</a></li>
+			  <li class="mynavbar"><a href="/dashboard">Dashboard</a></li>
+			  <li class="mynavbar" style="float:right; font-size:16px;"><a href="mailto:connor.benton@gmail.com" style ="padding:14px 14px" class="fa fa-envelope"></a></li>
+			  <li class="mynavbar" style="float:right; font-size:16px;"><a href="https://www.github.com/connorbenton" style = "padding: 14px 14px" class="fa fa-github"></a></li>
 		      </ul>
 	<div class = "container-fluid">
-		<div class="row"> 
-	      <div class="col-md-12"> 
-        <h3 style="margin: 16px 30px;">Temperature & Thermostat</h3>
-      </div>
-      </div>
-
-    <div class="row">
-	    <div class="col-md-12" style="margin: 0 50px 0 -10px;">	    
-
-      <div id="graph-cont-1" class="graph-cont">
-      </div>
-      <div>
-
-        <span id="range-btns-cont-1" class="btn-group range-btns-cont">
-            <button name="range-btn-5y" class="btn btn-default btn-mini">
-              5y
-            </button>
-            <button name="range-btn-1y" class="btn btn-default btn-mini">
-              1y
-            </button>
-            <button name="range-btn-ytd" class="btn btn-default  btn-mini">
-              YTD
-            </button>
-            <button name="range-btn-6m" class="btn btn-default btn-mini">
-              6m
-            </button>
-            <button name="range-btn-1m" class="btn btn-default  btn-mini">
-              1m
-            </button>
-            <button name="range-btn-1w" class="btn btn-default  btn-mini">
-              1w
-            </button>
-            <button name="range-btn-1d" class="btn btn-default btn-mini">
-              1d
-            </button>
-
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-        <h5>Thermostat Control</h5>
-
-  <div id="btn-group-thermostat" class="btn-group" data-toggle="buttons">
-      <label class="btn btn-default" id="off">
-        <!-- <input type="radio" name="off" id="off"> off --> 
-	<input type="radio"> off
-      </label>
-      <label class="btn btn-default" id="auto">
-        <!-- <input type="radio" name="auto" id="auto"> auto --> 
-	<input type="radio"> auto
-      </label>
-      <label class="btn btn-default" id="on">
-        <!-- <input type="radio" name="on" id="on"> on --> 
-	<input type="radio"> on
-      </label>
-</div>
-
-    </div>
-  </div>        
+		<div id = "content_marked"></div>
 	</div>
 
  <footer class="footer">
@@ -160,51 +99,31 @@ li a:hover {
   </div>
 </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.5.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+  <!-- <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.5.min.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script> -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-  <script src="/Scripts/temp_hist.js"></script>
-  <script src="/Scripts/temp_hist_provider.js"></script>
-  <script src="/Scripts/temp_hist_server.js"></script>
-  <script src="/Scripts/thermostat_button.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.1/dygraph-combined.js"></script> 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+  <!-- <script src="/scripts/temp_hist.js"></script> -->
+  <!-- <script src="/scripts/temp_hist_provider.js"></script> -->
+  <!-- <script src="/scripts/temp_hist_server.js"></script> -->
+  <!-- <script src="/scripts/thermostat_button.js"></script> -->
+  <script src="/scripts/marked.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.1/dygraph-combined.js"></script> --> 
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script> -->
+
 <script>
-AWS.config.region = 'us-east-1'; // Region
-AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-  IdentityPoolId: 'us-east-1:8ad5bccf-36bf-4e06-8c4a-de15f73ceab6'
-  // region: 'us-east-1'
-});
-AWS.config.credentials.get(function(){
 
-    // Credentials will be available when this function is called.
-    var accessKeyId = AWS.config.credentials.accessKeyId;
-    var secretAccessKey = AWS.config.credentials.secretAccessKey;
-    var sessionToken = AWS.config.credentials.sessionToken;
-
-});
-// AWS.config.credentials = new AWS.Credentials(accessKeyId, secreteAccessKey, sessionToken);
-// AWS.config.region = 'us-west-1'; // Region
-var dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
-// var dynamodb = dyanmo.DocumentClient();
   $(document).ready(function () {
-    var pageCfg = {
-      $graphCont: $("#graph-cont-1"),
-      $rangeBtnsCont: $("#range-btns-cont-1")
-    };
-	  
-    var pageCfg2 = {
-      $rangeBtnsCont: $("#btn-group-thermostat")
-    };
-	  var thist = new temp_hist(pageCfg);
-	  thist.init();
-	  var thermo = new thermostat_button(pageCfg2);
-	  thermo.init();
+
+	  $("#content_marked").load("/scripts/home.md", function() {
+   var md = marked($("#content_marked").html());
+   $("#content_marked").html(md);
+	});
 
   });
+
 </script>
 
 <!-- <script type ="text/javascript"></script> -->
