@@ -216,6 +216,16 @@ AWS.config.region = 'us-east-1'; // Region
 // AWS.config.region = 'us-west-1'; // Region
 var dynamodb;
 var cognitoUser;
+
+	var pageCfg = {
+      $graphCont: $("#graph-cont-1"),
+      $rangeBtnsCont: $("#range-btns-cont-1")
+    };
+	  
+    var pageCfg2 = {
+      $rangeBtnsCont: $("#btn-group-thermostat")
+    };
+
 // var dynamodb = dyanmo.DocumentClient();
   $(document).ready(function () {
 	 <!-- var dynamodb; --> 
@@ -223,6 +233,17 @@ var cognitoUser;
 			        UserPoolId : 'us-east-1_RJQUiedeu', // your user pool id here
       				ClientId : 'r9rn0da6vi442upopdvi409l2' // your client id here
 			    };
+	document.addEventListener('visibilitychange', function () {
+		if (document.visibilityState == 'hidden'){
+		} else {
+	  var thist = new temp_hist(pageCfg);
+		$("#range-btns-cont-1").children().removeClass('active');			
+	  thist.init();
+	  var thermo = new thermostat_button(pageCfg2);
+		$("#btn-group-thermostat").children().removeClass('active');			
+	  thermo.init();
+		}
+	}, false);
 	  
 var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
     cognitoUser = userPool.getCurrentUser();
@@ -259,6 +280,12 @@ var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poo
             // example: var s3 = new AWS.S3();
 			            $('#logged-in').removeAttr('hidden');
 				document.getElementById('active-user').innerHTML = cognitoUser.username;
+	  var thist = new temp_hist(pageCfg);
+		$("#range-btns-cont-1").children().removeClass('active');			
+	  thist.init();
+	  var thermo = new thermostat_button(pageCfg2);
+		$("#btn-group-thermostat").children().removeClass('active');			
+	  thermo.init();
 				<!-- $('#signin').attr('hidden','true'); -->
 
         });
@@ -266,15 +293,7 @@ var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poo
 	    $('#signin').removeAttr('hidden');
     }
 
-    var pageCfg = {
-      $graphCont: $("#graph-cont-1"),
-      $rangeBtnsCont: $("#range-btns-cont-1")
-    };
-	  
-    var pageCfg2 = {
-      $rangeBtnsCont: $("#btn-group-thermostat")
-    };
-	  
+      
 	  <!-- if  (!dynamodb.config.region) { -->
 		  <!-- dynamodb.config.update({ -->
 			  <!-- region: 'us-west-1' -->
