@@ -60,14 +60,21 @@ var paramsdygraph = {
 };
 var that = this;
 var curtime3 = [];
+var credentialtryflag = true;
 
-if (dynamodb != null) {
+function dynamoDBquery(paramsdygraph){
 dynamodb.query(paramsdygraph, function(err, data) {
-     if (err)
+     if (err) { 
+	if (refreshCredentials() && credentialtryflag) {
+		credentialtryflag = false;
+		dynamoDBquery(paramsdygraph);
+		return;
+	}
        console.log(JSON.stringify(err, null, 3));
+     }
      else
 //         console.log(JSON.stringify(data, null, 3));
-
+	credentialtryflag = true;
        data.Items.forEach(function(item) {
          // curtime3 = moment.utc(item.Date.toString(), "YYYYMMDDHHmmss");
          curtime3 = moment.utc(item.Date.N, "YYYYMMDDHHmmss");
@@ -81,6 +88,9 @@ dynamodb.query(paramsdygraph, function(err, data) {
 
       // console.log(dataPoints);
 });
+}
+if (dynamodb != null) {
+	dynamoDBquery(paramsdygraph);
 } else {
 
     if (!this.serverData) {

@@ -23,11 +23,19 @@
 		};
 
 		var InitialSlider;	
-if (dynamodb != null) {
-		  dynamodb.query(paramsInitializeSlider, function(err, data) {
-		      if (err)
+		  var thermoquerytryflag = true;
+function thermoquery(params) {
+dynamodb.query(params, function(err, data) {
+		      if (err) {
+			if (refreshCredentials() && thermoqueryflag) {
+				thermoquerytryflag = false;
+				thermoquery(params);
+				return;
+			}
 			console.log(JSON.stringify(err, null, 3));
+		      }
 		      else
+			thermoquerytryflag = true;
 		      data.Items.forEach(function(item) {
 			InitialSlider = item.WebsiteHeaterState.S;
 		      });
@@ -62,7 +70,11 @@ if (dynamodb != null) {
 
 		//       console.log(JSON.stringify(InitialSlider, null, 3));
 		  });
-} else {
+}
+
+if (dynamodb != null) {
+	thermoquery(paramsInitializeSlider);
+		  } else {
 			  var $btnInput = that.$rangeBtnsCont.find("#auto");
 			  $btnInput.addClass('active');
 }	
@@ -140,34 +152,35 @@ if (dynamodb != null) {
 			$(this).addClass('active');
 			
 if (dynamodb != null) {
+var updateitemtryflag = true;
 			if (rangeType == "off") {
 
-			 dynamodb.updateItem(paramsOffUpdate, function(err, data) {
-			    if (err)
-				console.log(JSON.stringify(err, null, 2));
-			    else
-				console.log(JSON.stringify(data, null, 2));
-			});
-					
+				dynamoupdateitem(paramsOffUpdate);
+
 			} else if (rangeType == "auto") {
 
-			 dynamodb.updateItem(paramsAutoUpdate, function(err, data) {
-			    if (err)
-				console.log(JSON.stringify(err, null, 2));
-			    else
-				console.log(JSON.stringify(data, null, 2));
-			});
-
+				dynamoupdateitem(paramsAutoUpdate);
 			
 			} else if (rangeType == "on") {
 
-			 dynamodb.updateItem(paramsOnUpdate, function(err, data) {
-			    if (err)
-				console.log(JSON.stringify(err, null, 2));
-			    else
-				console.log(JSON.stringify(data, null, 2));
-			});
+				dynamoupdateitem(paramsOnUpdate);
+				
 			}
+}
+function dynamoupdateitem (paramsUpdate) {
+	dynamodb.updateItem(paramsUpdate, function(err, data) {
+		if (err) {
+			if (refreshCredentials() && updateitemtryflag) {
+				updateitemtryflag = false;
+				dynamoupdateitem(paramsUpdate);
+				return;
+			}
+			console.log(JSON.stringify(err, null, 2));
+		}
+		else
+			updateitemtryflag = true;
+			console.log(JSON.stringify(data, null, 2));
+	});
 }
 		});
 	}

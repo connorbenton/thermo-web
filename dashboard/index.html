@@ -216,6 +216,10 @@ AWS.config.region = 'us-east-1'; // Region
 // AWS.config.region = 'us-west-1'; // Region
 var dynamodb;
 var cognitoUser;
+    var poolData = { 
+	        UserPoolId : 'us-east-1_RJQUiedeu', // your user pool id here
+      		ClientId : 'r9rn0da6vi442upopdvi409l2' // your client id here
+    };
 
 	var pageCfg = {
       $graphCont: $("#graph-cont-1"),
@@ -226,27 +230,9 @@ var cognitoUser;
       $rangeBtnsCont: $("#btn-group-thermostat")
     };
 
-// var dynamodb = dyanmo.DocumentClient();
-  $(document).ready(function () {
-	 <!-- var dynamodb; --> 
-			    var poolData = { 
-			        UserPoolId : 'us-east-1_RJQUiedeu', // your user pool id here
-      				ClientId : 'r9rn0da6vi442upopdvi409l2' // your client id here
-			    };
-	document.addEventListener('visibilitychange', function () {
-		if (document.visibilityState == 'hidden'){
-		} else {
-	  var thist = new temp_hist(pageCfg);
-		$("#range-btns-cont-1").children().removeClass('active');			
-	  thist.init();
-	  var thermo = new thermostat_button(pageCfg2);
-		$("#btn-group-thermostat").children().removeClass('active');			
-	  thermo.init();
-		}
-	}, false);
-	  
-var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
-    cognitoUser = userPool.getCurrentUser();
+function refreshCredentials(){
+	var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+   	cognitoUser = userPool.getCurrentUser();
 
     if (cognitoUser != null) {
         cognitoUser.getSession(function(err, session) {
@@ -271,7 +257,28 @@ var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poo
 	             'cognito-idp.us-east-1.amazonaws.com/us-east-1_RJQUiedeu' : session.getIdToken().getJwtToken()
 	                }
             });
+	});
+	return true;		
+    }
+}
 
+// var dynamodb = dyanmo.DocumentClient();
+  $(document).ready(function () {
+	 <!-- var dynamodb; --> 
+	document.addEventListener('visibilitychange', function () {
+		if (document.visibilityState == 'hidden'){
+		} else {
+	  var thist = new temp_hist(pageCfg);
+		$("#range-btns-cont-1").children().removeClass('active');			
+	  thist.init();
+	  var thermo = new thermostat_button(pageCfg2);
+		$("#btn-group-thermostat").children().removeClass('active');			
+	  thermo.init();
+		}
+	}, false);
+	  
+	  if (refreshCredentials()) { 
+		  
 		  dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
 <!-- dynamodb = new AWS.DynamoDB(); -->
 <!-- dynamodb.config.update({region:'us-west-1'}); -->
@@ -287,8 +294,6 @@ var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poo
 		$("#btn-group-thermostat").children().removeClass('active');			
 	  thermo.init();
 				<!-- $('#signin').attr('hidden','true'); -->
-
-        });
     } else {
 	    $('#signin').removeAttr('hidden');
     }
