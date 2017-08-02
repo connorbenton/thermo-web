@@ -34,7 +34,7 @@ The easiest (and cheapest) way on AWS to store the data I had in mind was Dynamo
 
 The controller I settled on for receiving and sending data directly to DyanmoDB was an ESP8266, which already was fully compatible with my existing controller code via the [Arduino core](https://github.com/esp8266/Arduino) for the system, and which many have noted is remarkably powerful given its cost. I specifically used a NodeMCU development board, but in the future would love to explore creating a custom board for the ESP8266 if I ever get to the point where I think I won't change the circuit design any further (maybe I'll leave that until I migrate this project to an ESP32 some day).
 
-First with the help of the [aws-sdk-arduino](https://github.com/awslabs/aws-sdk-arduino) library, then switching to a HTTP API (**todo: check if HTTP API is right terminology**) based strategy as in the Cloud Thermometer project, I initially stored the temperature, then soon after the humidity, PID output (0-100% of the current window spent turned on), and current heater state in a single DynamoDB table. Shortly after that was up and working, I added a request in the controller code to a second, single-item table that stored the heater state, which evaluated the current desired thermostat state in that table as 0 (off), 1 (auto), or 2 (on).
+With the help of the [aws-sdk-arduino](https://github.com/awslabs/aws-sdk-arduino) library, I initially stored the temperature, then eventually the humidity, PID output (0-100% of the current window spent turned on), and current heater state in a DynamoDB 'data' table. Shortly after that was up and working, I added a request in the controller code to a second, single-item 'settings' table that stored the heater state, which evaluated the current desired thermostat state in that table as 0 (off), 1 (auto), or 2 (on). Eventually, I'd like to switch to a purely HTTP based interface with AWS (as in the Cloud Thermometer project), as I believe it'd be better for the stability of the ESP8266 program, but I need to do some more research on that front.
 
 #### Displaying the Data
 
@@ -46,7 +46,7 @@ At this point in my project, I had just moved to a new apartment which happily h
 
 **(todo: add wiring diagram)**
 
-While this additional connection has brought my thermostat system back near the heat source again, the thermostat circuit wires have given me easily five feet of separation between the two (enough for resonably accurate control), and my future goal is to use a second ESP8266 or even just the 433Mhz RX module in a simple circuit to accomplish the same on-off functionality in a physically separate circuit from the thermostat. With the electrical side of the system up to scratch, I moved on to my next goals for the data: providing a robust method to search and display historical data, and securing my site to avoid over- or mis-use by people other than myself. 
+While this additional connection has brought my thermostat system back near the heat source again, the thermostat circuit wires have given me easily five feet of separation between the two (enough for resonably accurate control), and my future goal is to use a second ESP8266 or even just the 433Mhz RX module in a simple circuit to accomplish the same on-off functionality in a physically separate circuit from the thermostat. With the electrical side of the system up to scratch, I moved on to my next goals for the data: to provide a method to search and display historical data, and to secure that data. 
 
 #### Historical Data
 
@@ -58,4 +58,19 @@ I ended up choosing [dygraphs](dygraphs.com) to display the data, due to its rob
 
 #### Securing Data Access
 
-Unfortunately, my free level of DynamoDB access doesn't have the capacity to support more than a dozen or so simultaneous loads of the largest data sets (once the data set hits 2500 items, the query moves to the next time interval table). If you visit the [dashboard](/dashboard) of this site, you'll load an example data set as in Josh Sanderson's original demo, which gives you an idea of what it's like to browse my data. This functionality was added with AWS Cognito, which handles the use of any AWS services to which I grant it access, and to which I can add additional users with their own configuration data - meaning that another user with another device could control it and view its data through this same site. In a similar vein, my own home thermostat won't be able to be controlled by random visitors to this (public) site. 
+Unfortunately, my free level of DynamoDB access doesn't have the capacity to support more than a dozen or so simultaneous loads of the largest data sets (once the data set hits 2500 items, the query moves to the next time interval table). If you visit the [dashboard](/dashboard) of this site, you'll load an example data set as in Josh Sanderson's original demo, which gives you an idea of what it's like to browse my data. I also obviously didn't want my thermostat to be controllable by random visitors to this (public) site, so the switch you're toggling is purely cosmetic. To view data from and control my thermostat, I log in and use the exact same page. This functionality was added with AWS Cognito, which handles the use of any AWS services to which I grant it access, and to which I can add additional users with their own configuration data - meaning that another user with another device could control it and view its data through the same page. 
+
+#### Putting it All Together
+
+You can find the code for the website at [this repo](https://github.com/connorbenton/thermo-web), which I've essentially duplicated on my S3 bucket. I've set up CloudFront and Route 53 to deploy my site - Will Morgan has a wonderful [guide](https://medium.com/@willmorgan/moving-a-static-website-to-aws-s3-cloudfront-with-https-1fdd95563106) that walks through this entire process. For any of the code that doesn't make sense, or any other questions about the project, feel free to leave a comment or drop me a line and I'll do my best to explain it. I'm no expert in any of the fields involved in this project (I'm certainly not much of a web dev), but I've really enjoyed learning new tools and improving my system. I hope this summary can inspire you to try building your own home automation system, and give you a rough framework from which to start.
+
+#### Future Objectives
+* Add non-volatile FRAM to the physical system in order to better handle unplanned ESP8266 resets
+* Transition to a ESP32 based board of my own design
+* Program the board in bare C (possibly with the ESP IDF) instead of an Arduino approach
+* Add setpoint control (I'm happy with my harcoded setting, but others may not be)
+* Tweak the graph display to best show the humidity, PID output, and heater state alongside temperature (possibly toggling their visibility)
+* Add scheduling (i.e. vacation mode, weekday/weekend settings) 
+* Add control linked to smartphone location or room movement/light sensors (possibly with controller directly, possibly with an AWS Lambda backend) 
+* Experiment with adding AWS IoT functionality to controller, supplanting the current direct-to-DynamoDB approach in order to have a more 'socket-like' connection
+* Experiment with data analysis and machine learning - scoring scenarios based on PID variables, output window size, external temperature data, etc.

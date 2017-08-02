@@ -246,6 +246,7 @@ function refreshCredentials(){
             cognitoUser.getUserAttributes(function(err, attributes) {
                 if (err) {
                     // Handle error
+  		     console.log(JSON.stringify(err, null, 3));
                 } else {
                     // Do something with attributes
                 }
@@ -268,12 +269,16 @@ function refreshCredentials(){
 	document.addEventListener('visibilitychange', function () {
 		if (document.visibilityState == 'hidden'){
 		} else {
-	  var thist = new temp_hist(pageCfg);
-		$("#range-btns-cont-1").children().removeClass('active');			
-	  thist.init();
-	  var thermo = new thermostat_button(pageCfg2);
-		$("#btn-group-thermostat").children().removeClass('active');			
-	  thermo.init();
+			if (refreshCredentials()) {
+		  var thist = new temp_hist(pageCfg);
+			$("#range-btns-cont-1").children().removeClass('active');	
+		  thist.init();
+	       	var thermo = new thermostat_button(pageCfg2);
+			$("#btn-group-thermostat").children().removeClass('active');	
+	  	thermo.init();
+		} else {
+			$('#signin').removeAttr('hidden');
+		}
 		}
 	}, false);
 	  
@@ -307,10 +312,10 @@ function refreshCredentials(){
 
 		  <!-- var dynamodb = new AWS.DynamoDB({region: 'us-west-1'}); -->
 
-	  var thist = new temp_hist(pageCfg);
-	  thist.init();
-	  var thermo = new thermostat_button(pageCfg2);
-	  thermo.init();
+	  <!-- var thist = new temp_hist(pageCfg); -->
+	  <!-- thist.init(); -->
+	  <!-- var thermo = new thermostat_button(pageCfg2); -->
+	  <!-- thermo.init(); -->
 	  
 		  $('.form-signout').on('submit',function(e) {
 			  e.preventDefault();
