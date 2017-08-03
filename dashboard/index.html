@@ -13,7 +13,16 @@
   <title>Cloud Thermostat</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://use.fontawesome.com/6d70bf0162.js"></script>
-  <!-- <link rel="stylesheet" type="text/css" href="toggle-switch.css"> -->
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-103834049-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
 </head>
 <style>
   .graph-cont {
@@ -259,6 +268,13 @@ function refreshCredentials(){
 	                }
             });
 	});
+	AWS.config.credentials.refresh((error) => {
+		if (error) {
+			console.error(error);
+		} else {
+			console.log('AWS credentials refreshed');
+		}
+	});
 	return true;		
     }
 }
@@ -269,29 +285,22 @@ function refreshCredentials(){
 	document.addEventListener('visibilitychange', function () {
 		if (document.visibilityState == 'hidden'){
 		} else {
-			if (refreshCredentials()) {
 		  var thist = new temp_hist(pageCfg);
 			$("#range-btns-cont-1").children().removeClass('active');	
 		  thist.init();
 	       	var thermo = new thermostat_button(pageCfg2);
 			$("#btn-group-thermostat").children().removeClass('active');	
 	  	thermo.init();
-		} else {
-			$('#signin').removeAttr('hidden');
-		}
 		}
 	}, false);
 	  
 	  if (refreshCredentials()) { 
 		  
 		  dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
-<!-- dynamodb = new AWS.DynamoDB(); -->
-<!-- dynamodb.config.update({region:'us-west-1'}); -->
 
             // Instantiate aws sdk service objects now that the credentials have been updated.
-            // example: var s3 = new AWS.S3();
-			            $('#logged-in').removeAttr('hidden');
-				document.getElementById('active-user').innerHTML = cognitoUser.username;
+	            $('#logged-in').removeAttr('hidden');
+			document.getElementById('active-user').innerHTML = cognitoUser.username;
 	  var thist = new temp_hist(pageCfg);
 		$("#range-btns-cont-1").children().removeClass('active');			
 	  thist.init();
@@ -301,21 +310,13 @@ function refreshCredentials(){
 				<!-- $('#signin').attr('hidden','true'); -->
     } else {
 	    $('#signin').removeAttr('hidden');
+	  var thist = new temp_hist(pageCfg);
+		$("#range-btns-cont-1").children().removeClass('active');			
+	  thist.init();
+	  var thermo = new thermostat_button(pageCfg2);
+		$("#btn-group-thermostat").children().removeClass('active');			
+	  thermo.init();
     }
-
-      
-	  <!-- if  (!dynamodb.config.region) { -->
-		  <!-- dynamodb.config.update({ -->
-			  <!-- region: 'us-west-1' -->
-		  <!-- }); -->
-	  <!-- } -->
-
-		  <!-- var dynamodb = new AWS.DynamoDB({region: 'us-west-1'}); -->
-
-	  <!-- var thist = new temp_hist(pageCfg); -->
-	  <!-- thist.init(); -->
-	  <!-- var thermo = new thermostat_button(pageCfg2); -->
-	  <!-- thermo.init(); -->
 	  
 		  $('.form-signout').on('submit',function(e) {
 			  e.preventDefault();
@@ -324,10 +325,6 @@ function refreshCredentials(){
 			  location.reload();
 			  }
 			});
-
-		  <!-- var cognitoUser; -->
-
-
 
 $('.form-signin').on('submit',function(e) {
 		    	e.preventDefault();
