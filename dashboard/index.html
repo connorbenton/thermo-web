@@ -301,6 +301,10 @@ function refreshCredentials(){
 				<!-- $('#signin').attr('hidden','true'); -->
     } else {
 	    $('#signin').removeAttr('hidden');
+	  var thist = new temp_hist(pageCfg);
+	  thist.init();
+	  var thermo = new thermostat_button(pageCfg2);
+	  thermo.init();
     }
 
       
@@ -393,7 +397,24 @@ $('.form-signin').on('submit',function(e) {
 
 			        },
 			        onFailure: function(err) {
-			            alert(err);
+					if (err.message.includes("Password reset required")) {
+						cognitoUser.forgotPassword({
+        onSuccess: function (result) {
+            console.log('call result: ' + result);
+        },
+        onFailure: function(err) {
+            alert(err);
+        },
+        inputVerificationCode() {
+            var verificationCode = prompt("Please input verification code", "");
+            var newPassword = prompt("Enter new password", "");
+            cognitoUser.confirmPassword(verificationCode, newPassword, this);
+        }
+    });
+					}
+					else {
+			            		alert(err);
+					}
 			        }
 			    });
 		    });
