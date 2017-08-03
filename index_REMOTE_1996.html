@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+<meta name="robots" content="noindex">
 <html lang="en">
 <head>
-  <link rel="canonical" href="https://connorbenton.com" />
   <link rel="apple-touch-icon" sizes="180x180" href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/Images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/Images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/Images/favicon-16x16.png">
   <link rel="manifest" href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/Images/manifest.json">
   <link rel="mask-icon" href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/Images/safari-pinned-tab.svg" color="#5bbad5">
+  <!-- <link rel="shortcut icon" type='image/x-icon' href="https://s3-us-west-1.amazonaws.com/thermo-web-cb/favicon.ico"> -->
   <meta name="theme-color" content="#ff000">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
   <title>Cloud Thermostat</title>
@@ -28,18 +29,9 @@
     width: 100%;
   }
 
-  html body {
-	  padding-top: 50px;
-  }
-
- .header{
-        position: fixed;
-	z-index: 100;
-	padding: 0 0 50px 0;
-        left:0;
-        right:0;
-        top:0;
-    }
+  <!-- h4 { -->
+  <!--   margin-top: 1em; -->
+  <!-- } -->
 
   footer {
     margin: 20px 0;
@@ -49,15 +41,14 @@
     margin: 2em 0;
   }
   
-a {
-  color: #337ebf;
-}  
-
 ul.mynavbar {
+    position:fixed;
     list-style-type: none;
+    margin: 0;
     padding: 0;
     overflow: hidden;
     background-color: #333;
+    top: 0;
     width: 100%;
 }
 
@@ -91,10 +82,7 @@ li.mynavbar a:hover {
   }
 
   .container-fluid {
-	  position: relative;
-	  width: 100%;
-	  max-width: 1000px;
-	  line-height: 170%;
+	  padding: 0em 2em;
   }
 
   .range-btns-cont  {
@@ -106,45 +94,35 @@ li.mynavbar a:hover {
 </style>
 <body>
 	
-	<div class="header">
 		      <ul class="mynavbar">
 			  <li class="mynavbar"><a class="active" href="/">Project Summary</a></li>
 			  <li class="mynavbar"><a href="/dashboard">Dashboard</a></li>
 			  <li class="mynavbar" style="float:right; font-size:16px;"><a href="mailto:connor.benton@gmail.com" style ="padding:14px 14px" class="fa fa-envelope"></a></li>
 			  <li class="mynavbar" style="float:right; font-size:16px;"><a href="https://www.github.com/connorbenton" style = "padding: 14px 14px" class="fa fa-github"></a></li>
 		      </ul>
-	</div>
-	<div class = "container-fluid">
+	<div class = "container-fluid" style="margin-top:50px">
 		<div id = "content_marked"></div>
-<div id="disqus_thread"></div>
-<script>
-
-var disqus_config = function () {
-this.page.url = "https://connorbenton.com";  // Replace PAGE_URL with your page's canonical URL variable
-this.page.identifier = 'Project Summary'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-};
-
-(function() { // DON'T EDIT BELOW THIS LINE
-var d = document, s = d.createElement('script');
-s.src = 'https://connorthermostat.disqus.com/embed.js';
-s.setAttribute('data-timestamp', +new Date());
-(d.head || d.body).appendChild(s);
-})();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
- 
 	</div>
 
-                           
  <footer class="footer">
-  <div class="container-fluid" style="text-align:center">
+  <div class="container-fluid">
 	  <span class="text-muted">&copy; 2017 Connor Benton</span>
   </div>
 </footer>
 
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <!-- <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.5.min.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script> -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <!-- <script src="/scripts/temp_hist.js"></script> -->
+  <!-- <script src="/scripts/temp_hist_provider.js"></script> -->
+  <!-- <script src="/scripts/temp_hist_server.js"></script> -->
+  <!-- <script src="/scripts/thermostat_button.js"></script> -->
   <script src="/scripts/marked.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.1/dygraph-combined.js"></script> --> 
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script> -->
 
 <script>
 
@@ -159,6 +137,7 @@ s.setAttribute('data-timestamp', +new Date());
 
 </script>
 
+<!-- <script type ="text/javascript"></script> -->
 
 </body>
 </html>

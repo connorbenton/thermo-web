@@ -230,8 +230,6 @@ var cognitoUser;
       		ClientId : 'r9rn0da6vi442upopdvi409l2' // your client id here
     };
 
-var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
-
 	var pageCfg = {
       $graphCont: $("#graph-cont-1"),
       $rangeBtnsCont: $("#range-btns-cont-1")
@@ -242,6 +240,7 @@ var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poo
     };
 
 function refreshCredentials(){
+	var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
    	cognitoUser = userPool.getCurrentUser();
 
     if (cognitoUser != null) {
@@ -312,10 +311,15 @@ function refreshCredentials(){
     } else {
 	    $('#signin').removeAttr('hidden');
 	  var thist = new temp_hist(pageCfg);
+<<<<<<< HEAD
+	  thist.init();
+	  var thermo = new thermostat_button(pageCfg2);
+=======
 		$("#range-btns-cont-1").children().removeClass('active');			
 	  thist.init();
 	  var thermo = new thermostat_button(pageCfg2);
 		$("#btn-group-thermostat").children().removeClass('active');			
+>>>>>>> 0e644d15d807f74cf582e41b83672f1a1e2b26f9
 	  thermo.init();
     }
 	  
@@ -365,6 +369,18 @@ $('.form-signin').on('submit',function(e) {
 				                }
 							})
 						});
+<!-- AWS.config.credentials.get(function(){ -->
+
+<!--     // Credentials will be available when this function is called. -->
+<!--     var accessKeyId = AWS.config.credentials.accessKeyId; -->
+<!--     var secretAccessKey = AWS.config.credentials.secretAccessKey; -->
+<!--     var sessionToken = AWS.config.credentials.sessionToken; -->
+
+<!-- }); -->
+
+		  dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
+<!-- dynamodb = new AWS.DynamoDB(); -->
+<!-- dynamodb.config.update({region:'us-west-1'}); -->
 
 				$('#signin').attr('hidden','true');
 			            $('#logged-in').removeAttr('hidden');
