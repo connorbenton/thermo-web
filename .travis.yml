@@ -1,0 +1,11 @@
+language: generic
+deploy:
+    provider: s3
+    access_key_id: $AWS_ACCESS_KEY # declared in Travis repo settings
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: thermo-web-cb
+    region: us-west-1
+    skip_cleanup: true
+notifications:
+    email:
+        on_failure: always

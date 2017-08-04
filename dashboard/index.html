@@ -68,7 +68,7 @@ li a:hover {
 		    color: white;
 }
 
-  li a:active {
+  li a.active {
 	  background-color: #111;
 		 text-decoration: none;
 			color: white; 
@@ -93,8 +93,8 @@ li a:hover {
 <body>
 	
 		      <ul>
-			  <li><a class="active" href="/">Project Summary</a></li>
-			  <li><a href="/dashboard">Dashboard</a></li>
+			  <li><a href="/">Project Summary</a></li>
+			  <li><a class="active" href="/dashboard">Dashboard</a></li>
 			  <li style="float:right; font-size:16px;"><a href="mailto:connor.benton@gmail.com" style ="padding:14px 14px" class="fa fa-envelope"></a></li>
 			  <li style="float:right; font-size:16px;"><a href="https://www.github.com/connorbenton" style = "padding: 14px 14px" class="fa fa-github"></a></li>
 		      </ul>
@@ -163,7 +163,7 @@ li a:hover {
 
   <div class="row">
     <div class="col-md-12">
-<form id="signin" class="form-signin" role="form" hidden>
+<form id="signin" class="form-signin" role="form" style="max-width:300px" hidden>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                             <input id="username" type="username" class="form-control" name="username" value="" placeholder="Username">                                        
@@ -177,7 +177,7 @@ li a:hover {
                         <button type="submit" class="btn btn-default">Login</button>
                    </form>
 
-<form id="form-password" class="form-signin" hidden>
+<form id="form-password" class="form-signin" style="max-width:300px" hidden>
 			<span>Set a new password to continue</span>
 			<label for="inputNewPassword" class="sr-only">Password</label>
 			<input type="password" id="inputNewPassword" class="form-control" placeholder="New Password" required>

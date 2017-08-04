@@ -259,7 +259,7 @@
 				ylabel: 'Temperature (F)',
 				showRangeSelector: false,
 				// interactionModel: Dygraph.Interaction.defaultModel,
-				connectSeparatedPoints: false,
+				connectSeparatedPoints: true,
 				dateWindow: [detailStartDateTm.getTime(), detailEndDateTm.getTime()],
 				// drawCallback: $.proxy(this._onDyDrawCallback, this),
 				zoomCallback: $.proxy(this._onDyZoomCallback, this),
