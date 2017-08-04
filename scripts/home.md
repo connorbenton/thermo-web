@@ -17,7 +17,7 @@ Initially, my parts list was:
 You can find the Arduino code that this project uses at [this repo](https://github.com/connorbenton/espthermostat) - I started using Git long after the the Arduino side of this project was finished, but I've tried to clean it up and comment it out to show where it began and how it grew over time. I used a 433Mhz link as opposed to an inline relay solution (like a Sonoff) due to wanting the temperature measurement far away from the heat source in the room, as mentioned above. After identifying the transmit codes which triggered the outlet (with the 433Mhz receiver and the included outlet remote), the transmitter was set up to cycle the outlet, and thus the heater, on and off corresponding to the duty cycle indicated by a [PI control](https://en.wikipedia.org/wiki/PID_controller). This control took inputs from the DHT22, and acted over a window of 15 minutes (now lengthened to 30). At this stage, the setup already did a good job of keeping the room at a comfortable temperature during the night, but I wondered just how well it was working. 
 
 <figure align="center" style="padding:10px 0 20px 0">
-  <img src="https://i.imgur.com/VRBec2j.jpg" style="width:100%;max-width:400px;margin:1em 0 1em 0;">
+  <img src="/Images/rf.jpg" style="width:100%;max-width:400px;margin:1em 0 1em 0;">
   <figcaption class="figure-caption text-center">Original plug-in heater unit, controlled by an RF outlet - unfortunately, the Etekcity outlets I used didn't have a good enough relay to use the 'high'/1500W setting on the unit, which would fry them after a couple hours</figcaption>
 </figure>
 
@@ -26,7 +26,7 @@ You can find the Arduino code that this project uses at [this repo](https://gith
 My next two goals were to provide a method to toggle the thermostat *off/auto/on* similar to most modern units, and to display the temperature (and PI output) over the most recent five minutes. Even though the 433 Mhz link enabled me to keep the system sitting next to my computer, I also desired a solution where I didn't require a wired connection and/or an always-on system to act as a middleman providing control and data storage. Conceptually, I preferred the decentralized idea of having the thermostat functioning independently within my home network without a middleman like a Pi, prioritizing the ability to deploy this system in other places and to other people (friends, family) without any extras or configuration needed beyond changing a couple WiFi settings and AWS variables (more on that later). I also didn't particularly care to keep this system local, as I wanted to eventually enable control and monitoring from anywhere, and in the event of Internet or power outages preferred to revert to non-mains electricity failsafes (I live in coastal California now, but grew up in Minnesota where it's a decidedly risky choice to omit a [mechanical thermostat](https://en.wikipedia.org/wiki/Bimetallic_strip#Thermostats) from a gas heating system, unless you enjoy the idea of frozen pipes bursting and flooding your house in -20&deg;F weather). 
 
 <figure align="center" style="padding:10px 0 20px 0">
-  <img src="https://i.imgur.com/ih7R3EC.jpg" style="width:100%;max-width:400px;margin:1em 0 1em 0;">
+  <img src="/Images/therm.jpg" style="width:100%;max-width:400px;margin:1em 0 1em 0;">
   <figcaption class="figure-caption text-center">Bimetallic thermostat connected to a gas heater, onto which I've spliced a parallel circuit running out to my thermostat (more on this in a bit)</figcaption>
 </figure>
 
@@ -52,21 +52,21 @@ Considering my constraints for the system I had in mind, I wanted a small static
 At this point in my project, I had just moved to a new apartment which happily had its own [direct-vent gas furnace](https://www.williamscomfortprod.com/product/direct-vent-furnaces/) that put out a *lot* more heat than the small plug-in unit I had intially been controlling. 
 
 <figure align="center" style="padding:10px 0 20px 0">
-  <img src="https://i.imgur.com/J3bIPM2.jpg" style="width:100%;max-width:400px;margin:1em 0 1em 0;">
+  <img src="/Images/heater.jpg" style="width:100%;max-width:400px;margin:1em 0 1em 0;">
   <figcaption class="figure-caption text-center">Gas-fired and a lot better at heating the place up than a ceramic heater</figcaption>
 </figure>
 
 These types of furnaces use a thermopile on their pilot lights to generate a small amount of current, which is then used to run a thermostat circuit. In most cases, this thermostat circuit is connected to a bimetallic thermostat, so the entire system is self-contained. To control this heater with my system, all I had to do was extend the circuit from the existing thermostat to my circuit, where a BJT allowed one of the digital pins of the ESP8266 to close the thermostat circuit, which turned the heater on via a solenoid valve on the gas feed line. This parallel wiring of thermostats allowed for non-mains electricity redundancy in the system, and brought the electrical layout of my system to its latest iteration - the wiring diagram is as follows:
 
 <p align="center">
-  <img src="https://i.imgur.com/uROt8fo.jpg" style="width:100%;max-width:800px;margin:1em 0 1em 0;">
+  <img src="/Images/schem.jpg" style="width:100%;max-width:600px;margin:1em 0 1em 0;">
 </p>
 
 
 While this additional connection has brought my thermostat system back near the heat source again, the thermostat circuit wires have given me easily five feet of separation between the two (enough for resonably accurate control), and my future goal is to use a second ESP8266 or even just the 433Mhz RX module in a simple circuit to accomplish the same on-off functionality in a physically separate circuit from the thermostat. With the electrical side of the system up to scratch, I moved on to my next goals for the data: to provide a method to search and display historical data, and to secure that data. 
 
 <figure align="center" style="padding:10px 0 20px 0">
-  <img src="https://i.imgur.com/Tp7bTpl.jpg" style="width:100%;max-width:400px;margin:1em 0;">
+  <img src="/Images/board.jpg" style="width:100%;max-width:400px;margin:1em 0;">
   <figcaption class="figure-caption text-center">Thermostat setup on a breadboard, in this configuration without the 433MHz TX unit (thermostat wires are loose red/black at top of picture)</figcaption>
 </figure>
 
@@ -77,7 +77,7 @@ The first challenge was to allow for a user to access not just the last five min
 I ended up choosing [dygraphs](dygraphs.com) to display the data, due to its robust and interactive handling of large data sets. To dynamically load my data based on the desired range of datetimes, I turned to Josh Sanderson's excellent [demo](https://kaliatech.github.io/dygraphs-dynamiczooming-example/) of dynamically loading data to dygraphs, which I modified to use my DynamoDB tables as a data source. Using dygraphs also allowed me to tack on extras like using the [suncalc](https://github.com/mourner/suncalc) library to shade the nighttime sections of the graph (when the x-axis only spans 14 days or less). This allowed a robust visulization of the data from any point in the recording history: 
 
 <p align="center">
-  <img src="https://i.imgur.com/x5Gx3Oy.gif" style="width:100%;max-width:800px;margin:1em 0 1em 0;">
+  <img src="/Images/data.gif" style="width:100%;max-width:800px;margin:1em 0 1em 0;">
 </p>
 
 #### Securing Data Access
@@ -100,6 +100,6 @@ You can find the code for the website at [this repo](https://github.com/connorbe
 * Experiment with data analysis and machine learning - scoring scenarios based on PID variables, output window size, external temperature data, etc.
 
 <figure align="center" style="padding:10px 0 20px 0">
-  <img src="https://i.imgur.com/U909Rqv.jpg" style="width:100%;max-width:400px;margin:1em 0 1em 0;">
+  <img src="/Images/case.jpg" style="width:100%;max-width:400px;margin:1em 0 1em 0;">
   <figcaption class="figure-caption text-center">Small 3D printed case that I stick the setup into, after tying everything together with jumper wires</figcaption>
 </figure>
