@@ -242,13 +242,14 @@ var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poo
 
 function refreshCredentials(){
    	cognitoUser = userPool.getCurrentUser();
-
+var validsession = false;
     if (cognitoUser != null) {
         cognitoUser.getSession(function(err, session) {
             if (err) {
                 alert(err);
                 return;
             }
+	validsession = true;
             console.log('session validity: ' + session.isValid());
 
             // NOTE: getSession must be called to authenticate user before calling getUserAttributes
@@ -267,15 +268,19 @@ function refreshCredentials(){
 	             'cognito-idp.us-east-1.amazonaws.com/us-east-1_RJQUiedeu' : session.getIdToken().getJwtToken()
 	                }
             });
+            // Instantiate aws sdk service objects now that the credentials have been updated.
+		  dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
 	});
-	AWS.config.credentials.refresh((error) => {
-		if (error) {
-			console.error(error);
-		} else {
-			console.log('AWS credentials refreshed');
-		}
-	});
+	<!-- AWS.config.credentials.refresh((error) => { -->
+	<!-- 	if (error) { -->
+	<!-- 		console.error(error); -->
+	<!-- 	} else { -->
+	<!-- 		console.log('AWS credentials refreshed'); -->
+	<!-- 	} -->
+	<!-- }); -->
+	if (validsession) {
 	return true;		
+	}
     }
 }
 
@@ -296,9 +301,7 @@ function refreshCredentials(){
 	  
 	  if (refreshCredentials()) { 
 		  
-		  dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
 
-            // Instantiate aws sdk service objects now that the credentials have been updated.
 	            $('#logged-in').removeAttr('hidden');
 			document.getElementById('active-user').innerHTML = cognitoUser.username;
 	  var thist = new temp_hist(pageCfg);
