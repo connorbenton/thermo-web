@@ -290,12 +290,14 @@ var validsession = false;
 	document.addEventListener('visibilitychange', function () {
 		if (document.visibilityState == 'hidden'){
 		} else {
+	  if (refreshCredentials()) { 
 		  var thist = new temp_hist(pageCfg);
 			$("#range-btns-cont-1").children().removeClass('active');	
 		  thist.init();
 	       	var thermo = new thermostat_button(pageCfg2);
 			$("#btn-group-thermostat").children().removeClass('active');	
 	  	thermo.init();
+	  }
 		}
 	}, false);
 	  
