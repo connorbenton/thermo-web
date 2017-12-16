@@ -249,14 +249,15 @@
 			axes.y = {valueRange: null};
 		} else {
 			axes.y = {valueRange: [40, 100]};
-		}
+    }
+    axes.y.axisLabelWidth = 20;
 		
 
 		if (!this.graph || recreateDygraph) {
 			var graphCfg = {
 				axes: axes,
-				labels: labels,
-				ylabel: 'Temperature (F)',
+				// labels: labels,
+        // ylabel: 'Temperature (F)',
 				showRangeSelector: false,
 				// interactionModel: Dygraph.Interaction.defaultModel,
 				connectSeparatedPoints: true,

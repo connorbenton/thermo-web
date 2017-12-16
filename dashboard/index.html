@@ -105,13 +105,13 @@ li a:hover {
       </div>
 
     <div class="row">
-	    <div class="col-md-12" style="margin: 0 50px 0 -10px;">	    
+	    <div class="col-md-12" style="margin: 0 5% 0 1%; padding: 0">	    
 
       <div id="graph-cont-1" class="graph-cont">
       </div>
       <div>
 
-        <span id="range-btns-cont-1" class="btn-group range-btns-cont">
+        <span id="range-btns-cont-1" class="btn-group range-btns-cont" style="margin: 6px 0 6px 0;">
             <button name="range-btn-5y" class="btn btn-default btn-mini">
               5y
             </button>
@@ -140,23 +140,32 @@ li a:hover {
   </div>
 
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-xs-6">
         <h5>Thermostat Control</h5>
 
   <div style="padding:0 0 1em 0" id="btn-group-thermostat" class="btn-group" data-toggle="buttons">
-      <label class="btn btn-default" id="off">
+      <label style="width:40px" class="btn btn-default" id="off" disabled>
         <!-- <input type="radio" name="off" id="off"> off --> 
 	<input type="radio"> off
       </label>
-      <label class="btn btn-default" id="auto">
+      <label style="width:70px" class="btn btn-default" id="auto" disabled>
         <!-- <input type="radio" name="auto" id="auto"> auto --> 
 	<input type="radio"> auto
       </label>
-      <label class="btn btn-default" id="on">
+      <label style="width:40px" class="btn btn-default" id="on" disabled>
         <!-- <input type="radio" name="on" id="on"> on --> 
 	<input type="radio"> on
       </label>
-</div>
+  </div>
+  </div>
+    <div class="col-xs-6">
+        <h5>Thermostat Setpoint</h5>
+
+  <div style="padding:0 0 1em 0" id="setpoint-group-thermostat" class="btn-group" data-toggle="buttons">
+    <button style="width:60px" class="btn btn-default" type="submit" id="down" disabled>down</button>
+    <button style="width:40px" class="btn btn-default" type="submit" id="setpoint" disabled>69</button>
+    <button style="width:60px" class="btn btn-default" type="submit" id="up" disabled>up</button>
+  </div>
     </div>
     </div>
 
@@ -212,6 +221,7 @@ li a:hover {
   <script src="/scripts/thermostat_button.js"></script>
   <script src="/scripts/aws-cognito-sdk.min.js"></script>
   <script src="/scripts/amazon-cognito-identity.min.js"></script>
+  <script src="/scripts/aws-sdk-2.171.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.1/dygraph-combined.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
 <script>
@@ -223,6 +233,7 @@ AWS.config.region = 'us-east-1'; // Region
 // AWS.config.credentials = new AWS.Credentials(accessKeyId, secreteAccessKey, sessionToken);
 // AWS.config.region = 'us-west-1'; // Region
 var dynamodb;
+const awsIot;
 var cognitoUser;
     var poolData = { 
 	        UserPoolId : 'us-east-1_RJQUiedeu', // your user pool id here
