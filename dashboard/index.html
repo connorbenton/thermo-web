@@ -293,8 +293,11 @@ var validsession = false;
             access = AWS.config.credentials.accessKeyId;
             secret = AWS.config.credentials.secretAccessKey;
             sesh = AWS.config.credentials.sessionToken;
-          
-            $.event.trigger({type: "newIot"});
+            var iotparams = {
+              policyName: "WebsitePolicy", 
+              principal: AWS.config.credentials.identityId
+        };           
+        $.event.trigger({type: "newIot"});
         }
     });
 
