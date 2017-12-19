@@ -204,10 +204,10 @@ function dynamoupdateitem (paramsUpdate) {
 		});
 
 		this.$setpointBtnsCont.children().on('click', function (evt2) {
-			evt2.preventDefault();
+			// evt2.preventDefault();
 			  var rangeType = evt2.target.id.toString();
 			that.$setpointBtnsCont.children().removeClass('active');
-			$(this).addClass('active');
+			// $(this).addClass('active');
 			
 if (dynamodb != null) {
 var updateitemtryflag = true;

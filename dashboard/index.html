@@ -97,7 +97,7 @@ li a:hover {
 			  <li style="float:right; font-size:16px;"><a href="mailto:connor.benton@gmail.com" style ="padding:14px 14px" class="fa fa-envelope"></a></li>
 			  <li style="float:right; font-size:16px;"><a href="https://www.github.com/connorbenton" style = "padding: 14px 14px" class="fa fa-github"></a></li>
 		      </ul>
-	<div class = "container-fluid">
+	<div class = "container-fluid" style="margin: 0 3% 0 1%">
 		<div class="row"> 
 	      <div class="col-md-12"> 
         <h3 style="margin: 16px 30px;">Temperature & Thermostat</h3>
@@ -105,7 +105,7 @@ li a:hover {
       </div>
 
     <div class="row">
-	    <div class="col-md-12" style="margin: 0 5% 0 1%; padding: 0">	    
+	    <div class="col-md-12" style="max-width: 100%; padding: 0">	    
 
       <div id="graph-cont-1" class="graph-cont">
       </div>
@@ -230,10 +230,6 @@ AWS.config.region = 'us-east-1'; // Region
 // AWS.config.credentials = new AWS.Credentials(accessKeyId, secreteAccessKey, sessionToken);
 // AWS.config.region = 'us-west-1'; // Region
 var dynamodb;
-var creds;
-var access;
-var secret;
-var sesh;
 var sendtopic;
 var msgcontent;
 
@@ -290,10 +286,6 @@ var validsession = false;
         if (err) {
             callback(err, null);
             console.log(AWS.config.credentials);
-        } else {
-            access = AWS.config.credentials.accessKeyId;
-            secret = AWS.config.credentials.secretAccessKey;
-            sesh = AWS.config.credentials.sessionToken;
         };           
             var iotparams = {
               policyName: "WebsitePolicy", 
@@ -303,7 +295,6 @@ var validsession = false;
                 if (err) console.log(err, err.stack);
                 else console.log(data);
             });
-
         $.event.trigger({type: "newIot"});
     });
 

@@ -56,24 +56,47 @@
             }
         }
           , onConnect = function() {
-            client.subscribe(iotTopic),
+            client.subscribe('Thermostat_01/settings/#'),
             addLog("Connected")
         }
           , onMessage = function(n, e) {
+            var encodedString = String.fromCharCode.apply(null, e);
+            if (n == 'Thermostat_01/settings/setpoint') {
+               $("#setpoint").prop('textContent', encodedString);	
+            } else if (n == 'Thermostat_01/settings/radio') {
+                switch(encodedString) {
+                    case "1":
+                        $("#btn-group-thermostat").children().removeClass('active')
+                        $("#off").addClass('active');
+                        break;
+                    case "2":
+                        $("#btn-group-thermostat").children().removeClass('active')
+                        $("#auto").addClass('active');
+                        break;
+                    case "3":
+                        $("#btn-group-thermostat").children().removeClass('active')
+                        $("#on").addClass('active');
+                }
+            }
             addLog(e)
         }
           , onError = function() {
               addLog("error")
           }
-          , onReconnect = function() {}
-          , onOffline = function() {}
+          , onReconnect = function() {
+            client.subscribe('Thermostat_01/settings/#'),
+            addLog("Reconnected")
+          }
+          , onOffline = function() {
+              addLog("Offline")
+          }
           , onClose = function() {
             addLog("Connection failed")
         };
         $(document).ready(function() {
             var n = void 0;
             $(document).on("newIot", function() {
-                  const iotTopic = '/Thermostat_01/settings/';
+                  const iotTopic = 'Thermostat_01/settings/#';
                   const iotEndpoint = 'a2fv0gg3y1z83b.iot.us-east-1.amazonaws.com';
                   const iotRegion = 'us-east-1';
 
