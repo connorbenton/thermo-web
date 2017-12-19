@@ -1,6 +1,7 @@
 
   thermostat_button = function (pageCfg) {
 		this.$rangeBtnsCont = pageCfg.$rangeBtnsCont;
+		this.$setpointBtnsCont = pageCfg.$setpointBtnsCont;
   }
 
 	  thermostat_button.prototype.init = function() {
@@ -17,12 +18,13 @@
 		    KeyConditionExpression: "Id = :resourceFromSite",
 		    ExpressionAttributeValues: {
 			":resourceFromSite": {
-				S: "Website"
+				S: "Thermostat_01"
 			}
 		    }
 		};
 
-		var InitialSlider;	
+		var InitialSlider;
+		var InitialSetpoint;	
 		  var thermoquerytryflag = true;
 function thermoquery(params) {
 dynamodb.query(params, function(err, data) {
@@ -37,8 +39,13 @@ dynamodb.query(params, function(err, data) {
 		      else
 			thermoquerytryflag = true;
 		      data.Items.forEach(function(item) {
-			InitialSlider = item.WebsiteHeaterState.S;
-		      });
+			InitialSlider = item.HeaterState.S;
+			InitialSetpoint = item.HeaterSetpoint.N;
+			  });
+
+		  var $Set = that.$setpointBtnsCont.find("#setpoint");
+		  $Set.prop('textContent',InitialSetpoint);
+
 		  if (InitialSlider == "1") {
 			  
 			  var $btnInput = that.$rangeBtnsCont.find("#off");
@@ -88,17 +95,20 @@ if (dynamodb != null) {
 		// AWS.config.region = 'us-west-1'; // Region
 		// var dynamodb = new dynamo.DocumentClient();
 
+		var Setpoint;
+		var setpointString; 
+
 		var paramsOnUpdate = {
 		    TableName: 'HeaterManualState',
 		    Key: {
 		      "Id": {
-			      S: "Website"
+			      S: "Thermostat_01"
 		      },
 		      "Date": {
 			      N: "1"
 		      }
 		    },
-		    UpdateExpression: "SET WebsiteHeaterState = :resourceFromSite",
+		    UpdateExpression: "SET HeaterState = :resourceFromSite",
 		    ExpressionAttributeValues: {
 			":resourceFromSite": {
 				S: "3"
@@ -111,13 +121,13 @@ if (dynamodb != null) {
 		    TableName: 'HeaterManualState',
 		    Key: {
 		      "Id": {
-			      S: "Website"
+			      S: "Thermostat_01"
 		      },
 		      "Date": {
 			      N: "1"
 		      }
 		    },
-		    UpdateExpression: "SET WebsiteHeaterState = :resourceFromSite",
+		    UpdateExpression: "SET HeaterState = :resourceFromSite",
 		    ExpressionAttributeValues: {
 			":resourceFromSite": {
 				S: "2"
@@ -130,13 +140,13 @@ if (dynamodb != null) {
 		    TableName: 'HeaterManualState',
 		    Key: {
 		      "Id": {
-			      S: "Website"
+			      S: "Thermostat_01"
 		      },
 		      "Date": {
 			      N: "1"
 		      }
 		    },
-		    UpdateExpression: "SET WebsiteHeaterState = :resourceFromSite",
+		    UpdateExpression: "SET HeaterState = :resourceFromSite",
 		    ExpressionAttributeValues: {
 			":resourceFromSite": {
 				S: "1"
@@ -145,9 +155,10 @@ if (dynamodb != null) {
 		    ReturnValues: "ALL_NEW"
 		};
 
+
 		this.$rangeBtnsCont.children().on('click', function (evt) {
 			evt.preventDefault();
-		      var rangeType = evt.target.id.toString();
+			  var rangeType = evt.target.id.toString();
 			that.$rangeBtnsCont.children().removeClass('active');
 			$(this).addClass('active');
 			
@@ -156,16 +167,24 @@ var updateitemtryflag = true;
 			if (rangeType == "off") {
 
 				dynamoupdateitem(paramsOffUpdate);
+				sendtopic = "Thermostat_01/settings/radio";
+				msgcontent = "1";	
+            	$.event.trigger({type: "triggerIoT"});
 
 			} else if (rangeType == "auto") {
 
 				dynamoupdateitem(paramsAutoUpdate);
+				sendtopic = "Thermostat_01/settings/radio";
+				msgcontent = "2";	
+            	$.event.trigger({type: "triggerIoT"});
 			
 			} else if (rangeType == "on") {
 
 				dynamoupdateitem(paramsOnUpdate);
-				
-			}
+				sendtopic = "Thermostat_01/settings/radio";
+				msgcontent = "3";	
+            	$.event.trigger({type: "triggerIoT"});
+			} 
 }
 function dynamoupdateitem (paramsUpdate) {
 	dynamodb.updateItem(paramsUpdate, function(err, data) {
@@ -183,6 +202,95 @@ function dynamoupdateitem (paramsUpdate) {
 	});
 }
 		});
+
+		this.$setpointBtnsCont.children().on('click', function (evt2) {
+			evt2.preventDefault();
+			  var rangeType = evt2.target.id.toString();
+			that.$setpointBtnsCont.children().removeClass('active');
+			$(this).addClass('active');
+			
+if (dynamodb != null) {
+var updateitemtryflag = true;
+		if (rangeType == "up") {
+			Setpoint = parseInt(that.$setpointBtnsCont.find("#setpoint").prop('textContent')) + 1;
+			that.$setpointBtnsCont.find("#setpoint").prop('textContent', Setpoint);
+			setpointString = Setpoint.toString();
+		var paramsUpUpdate = {
+		    TableName: 'HeaterManualState',
+		    Key: {
+		      "Id": {
+			      S: "Thermostat_01"
+		      },
+		      "Date": {
+			      N: "1"
+		      }
+		    },
+		    UpdateExpression: "SET HeaterSetpoint = :resourceFromSite",
+		    ExpressionAttributeValues: {
+			":resourceFromSite": {
+				N: setpointString
+			}
+		    },
+			ReturnValues: "ALL_NEW"
+		};
+			dynamoupdateitem(paramsUpUpdate);
+			sendtopic = "Thermostat_01/settings/setpoint";
+			msgcontent = setpointString;	
+			$.event.trigger({type: "triggerIoT"});
+
+		} else if (rangeType == "down") {
+			Setpoint = parseInt(that.$setpointBtnsCont.find("#setpoint").prop('textContent')) - 1;
+			that.$setpointBtnsCont.find("#setpoint").prop('textContent', Setpoint);	
+			setpointString = Setpoint.toString();
+		var paramsDownUpdate = {
+		    TableName: 'HeaterManualState',
+		    Key: {
+		      "Id": {
+			      S: "Thermostat_01"
+		      },
+		      "Date": {
+			      N: "1"
+		      }
+		    },
+		    UpdateExpression: "SET HeaterSetpoint = :resourceFromSite",
+		    ExpressionAttributeValues: {
+			":resourceFromSite": {
+				N: setpointString
+			}
+		    },
+		    ReturnValues: "ALL_NEW"
+		};
+			dynamoupdateitem(paramsDownUpdate);
+			sendtopic = "Thermostat_01/settings/setpoint";
+			msgcontent = setpointString;	
+			$.event.trigger({type: "triggerIoT"});
+		}
+} else {
+	if (rangeType == "up") {
+			Setpoint = parseInt(that.$setpointBtnsCont.find("#setpoint").prop('textContent')) + 1;
+		that.$setpointBtnsCont.find("#setpoint").prop('textContent', Setpoint);	
+	} else if (rangeType == "down") {
+			Setpoint = parseInt(that.$setpointBtnsCont.find("#setpoint").prop('textContent')) - 1;
+		that.$setpointBtnsCont.find("#setpoint").prop('textContent', Setpoint);
+	}
+}
+function dynamoupdateitem (paramsUpdate) {
+	dynamodb.updateItem(paramsUpdate, function(err, data) {
+		if (err) {
+			if (refreshCredentials() && updateitemtryflag) {
+				updateitemtryflag = false;
+				dynamoupdateitem(paramsUpdate);
+				return;
+			}
+			console.log(JSON.stringify(err, null, 2));
+		}
+		else
+			updateitemtryflag = true;
+			console.log(JSON.stringify(data, null, 2));
+	});
+}
+		});
+
 	}
 
 

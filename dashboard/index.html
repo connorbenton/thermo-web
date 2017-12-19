@@ -140,31 +140,27 @@ li a:hover {
   </div>
 
   <div class="row">
-    <div class="col-xs-6">
-        <h5>Thermostat Control</h5>
+    <div class="col-md-12">
+        <h5>Thermostat Control and Setpoint</h5>
 
   <div style="padding:0 0 1em 0" id="btn-group-thermostat" class="btn-group" data-toggle="buttons">
-      <label style="width:40px" class="btn btn-default" id="off" disabled>
+      <label style="width:40px" class="btn btn-default" id="off">
         <!-- <input type="radio" name="off" id="off"> off --> 
 	<input type="radio"> off
       </label>
-      <label style="width:70px" class="btn btn-default" id="auto" disabled>
+      <label style="width:70px" class="btn btn-default" id="auto">
         <!-- <input type="radio" name="auto" id="auto"> auto --> 
 	<input type="radio"> auto
       </label>
-      <label style="width:40px" class="btn btn-default" id="on" disabled>
+      <label style="width:40px" class="btn btn-default" id="on">
         <!-- <input type="radio" name="on" id="on"> on --> 
 	<input type="radio"> on
       </label>
   </div>
-  </div>
-    <div class="col-xs-6">
-        <h5>Thermostat Setpoint</h5>
-
-  <div style="padding:0 0 1em 0" id="setpoint-group-thermostat" class="btn-group" data-toggle="buttons">
-    <button style="width:60px" class="btn btn-default" type="submit" id="down" disabled>down</button>
+  <div style="padding:0 0 1em 1em" id="grp-setpoint" class="btn-group" data-toggle="buttons">
+    <button style="width:60px" class="btn btn-default" type="submit" id="down">down</button>
     <button style="width:40px" class="btn btn-default" type="submit" id="setpoint" disabled>69</button>
-    <button style="width:60px" class="btn btn-default" type="submit" id="up" disabled>up</button>
+    <button style="width:60px" class="btn btn-default" type="submit" id="up">up</button>
   </div>
     </div>
     </div>
@@ -221,10 +217,11 @@ li a:hover {
   <script src="/scripts/thermostat_button.js"></script>
   <script src="/scripts/aws-cognito-sdk.min.js"></script>
   <script src="/scripts/amazon-cognito-identity.min.js"></script>
-  <script src="/scripts/aws-sdk-2.171.0.min.js"></script>
+  <script src="/scripts/iot_handler.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dygraph/1.1.1/dygraph-combined.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
 <script>
+// var AWS;
 AWS.config.region = 'us-east-1'; // Region
 <!-- AWS.config.credentials = new AWS.CognitoIdentityCredentials({ -->
 <!--   IdentityPoolId: 'us-east-1:8ad5bccf-36bf-4e06-8c4a-de15f73ceab6' -->
@@ -233,7 +230,13 @@ AWS.config.region = 'us-east-1'; // Region
 // AWS.config.credentials = new AWS.Credentials(accessKeyId, secreteAccessKey, sessionToken);
 // AWS.config.region = 'us-west-1'; // Region
 var dynamodb;
-const awsIot;
+var creds;
+var access;
+var secret;
+var sesh;
+var sendtopic;
+var msgcontent;
+
 var cognitoUser;
     var poolData = { 
 	        UserPoolId : 'us-east-1_RJQUiedeu', // your user pool id here
@@ -248,7 +251,8 @@ var userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poo
     };
 	  
     var pageCfg2 = {
-      $rangeBtnsCont: $("#btn-group-thermostat")
+      $rangeBtnsCont: $("#btn-group-thermostat"),
+      $setpointBtnsCont: $("#grp-setpoint")
     };
 
 function refreshCredentials(){
@@ -280,7 +284,20 @@ var validsession = false;
 	                }
             });
             // Instantiate aws sdk service objects now that the credentials have been updated.
-		  dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
+      dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
+      AWS.config.credentials.get(function(err) {
+        if (err) {
+            callback(err, null);
+            console.log(AWS.config.credentials);
+        } else {
+            access = AWS.config.credentials.accessKeyId;
+            secret = AWS.config.credentials.secretAccessKey;
+            sesh = AWS.config.credentials.sessionToken;
+          
+            $.event.trigger({type: "newIot"});
+        }
+    });
+
 	});
 	<!-- AWS.config.credentials.refresh((error) => { -->
 	<!-- 	if (error) { -->
@@ -307,7 +324,7 @@ var validsession = false;
 		  thist.init();
 	       	var thermo = new thermostat_button(pageCfg2);
 			$("#btn-group-thermostat").children().removeClass('active');	
-	  	thermo.init();
+      thermo.init();
 	  }
 		}
 	}, false);
