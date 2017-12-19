@@ -285,6 +285,7 @@ var validsession = false;
             });
             // Instantiate aws sdk service objects now that the credentials have been updated.
       dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
+        iotInstance = new AWS.Iot();
       AWS.config.credentials.get(function(err) {
         if (err) {
             callback(err, null);
@@ -293,12 +294,17 @@ var validsession = false;
             access = AWS.config.credentials.accessKeyId;
             secret = AWS.config.credentials.secretAccessKey;
             sesh = AWS.config.credentials.sessionToken;
+        };           
             var iotparams = {
               policyName: "WebsitePolicy", 
               principal: AWS.config.credentials.identityId
-        };           
+            };
+            iotInstance.attachPrincipalPolicy(iotparams, function (err, data){
+                if (err) console.log(err, err.stack);
+                else console.log(data);
+            });
+
         $.event.trigger({type: "newIot"});
-        }
     });
 
 	});

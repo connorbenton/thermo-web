@@ -76,6 +76,7 @@
                   const iotTopic = '/Thermostat_01/settings/';
                   const iotEndpoint = 'a2fv0gg3y1z83b.iot.us-east-1.amazonaws.com';
                   const iotRegion = 'us-east-1';
+
                   IoT.connect(iotTopic, 
                     iotEndpoint,
                     iotRegion,
