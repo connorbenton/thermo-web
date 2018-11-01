@@ -29,7 +29,7 @@
 function thermoquery(params) {
 dynamodb.query(params, function(err, data) {
 		      if (err) {
-			if (refreshCredentials() && thermoqueryflag) {
+			if (refreshCredentials() && thermoquerytryflag) {
 				thermoquerytryflag = false;
 				thermoquery(params);
 				return;

@@ -103,7 +103,8 @@ GraphDataProvider = function () {
 	    var dyFullData = [];
       for (var i = 0; i < splicedData.length; i++) {
         // if (dataLoadReq.includeMinMax)
-          dyFullData.push([new Date(splicedData[i].x), [splicedData[i].temp, splicedData[i].humidity, splicedData[i].heaterState, splicedData[i].pidOutput]]);
+          // dyFullData.push([new Date(splicedData[i].x), [splicedData[i].temp, splicedData[i].humidity, splicedData[i].heaterState, splicedData[i].pidOutput]]);
+          dyFullData.push([new Date(splicedData[i].x), [splicedData[i].temp, splicedData[i].humidity]]);
 	      dyData.push([new Date(splicedData[i].x), splicedData[i].temp]);
         // else
           // dyData.push([new Date(splicedData[i].x), splicedData[i].y]);

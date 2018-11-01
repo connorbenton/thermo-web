@@ -138,22 +138,19 @@ li a:hover {
       </div>
     </div>
   </div>
-
+<!--
   <div class="row">
     <div class="col-md-12">
         <h5>Thermostat Control and Setpoint</h5>
 
   <div style="padding:0 0 1em 0" id="btn-group-thermostat" class="btn-group" data-toggle="buttons">
       <label style="width:40px" class="btn btn-default" id="off">
-        <!-- <input type="radio" name="off" id="off"> off --> 
 	<input type="radio"> off
       </label>
       <label style="width:70px" class="btn btn-default" id="auto">
-        <!-- <input type="radio" name="auto" id="auto"> auto --> 
 	<input type="radio"> auto
       </label>
       <label style="width:40px" class="btn btn-default" id="on">
-        <!-- <input type="radio" name="on" id="on"> on --> 
 	<input type="radio"> on
       </label>
   </div>
@@ -164,7 +161,7 @@ li a:hover {
   </div>
     </div>
     </div>
-
+-->
   <div class="row">
     <div class="col-md-12">
 <form id="signin" class="form-signin" role="form" style="max-width:300px" hidden>
@@ -280,22 +277,22 @@ var validsession = false;
 	                }
             });
             // Instantiate aws sdk service objects now that the credentials have been updated.
-      dynamodb = new AWS.DynamoDB({region: 'us-west-1'});
-        iotInstance = new AWS.Iot();
+      dynamodb = new AWS.DynamoDB({region: 'eu-central-1'});
+        // iotInstance = new AWS.Iot();
       AWS.config.credentials.get(function(err) {
         if (err) {
             callback(err, null);
             console.log(AWS.config.credentials);
         };           
-            var iotparams = {
-              policyName: "WebsitePolicy", 
-              principal: AWS.config.credentials.identityId
-            };
-            iotInstance.attachPrincipalPolicy(iotparams, function (err, data){
-                if (err) console.log(err, err.stack);
-                else console.log(data);
-            });
-        $.event.trigger({type: "newIot"});
+        //     var iotparams = {
+        //       policyName: "WebsitePolicy", 
+        //       principal: AWS.config.credentials.identityId
+        //     };
+        //     iotInstance.attachPrincipalPolicy(iotparams, function (err, data){
+        //         if (err) console.log(err, err.stack);
+        //         else console.log(data);
+        //     });
+        // $.event.trigger({type: "newIot"});
     });
 
 	});
@@ -322,9 +319,9 @@ var validsession = false;
 		  var thist = new temp_hist(pageCfg);
 			$("#range-btns-cont-1").children().removeClass('active');	
 		  thist.init();
-	       	var thermo = new thermostat_button(pageCfg2);
-			$("#btn-group-thermostat").children().removeClass('active');	
-      thermo.init();
+	    //    	var thermo = new thermostat_button(pageCfg2);
+			// $("#btn-group-thermostat").children().removeClass('active');	
+      // thermo.init();
 	  }
 		}
 	}, false);
@@ -337,18 +334,18 @@ var validsession = false;
 	  var thist = new temp_hist(pageCfg);
 		$("#range-btns-cont-1").children().removeClass('active');			
 	  thist.init();
-	  var thermo = new thermostat_button(pageCfg2);
-		$("#btn-group-thermostat").children().removeClass('active');			
-	  thermo.init();
+	  // var thermo = new thermostat_button(pageCfg2);
+		// $("#btn-group-thermostat").children().removeClass('active');			
+	  // thermo.init();
 				<!-- $('#signin').attr('hidden','true'); -->
     } else {
 	    $('#signin').removeAttr('hidden');
 	  var thist = new temp_hist(pageCfg);
 		$("#range-btns-cont-1").children().removeClass('active');			
 	  thist.init();
-	  var thermo = new thermostat_button(pageCfg2);
-		$("#btn-group-thermostat").children().removeClass('active');			
-	  thermo.init();
+	  // var thermo = new thermostat_button(pageCfg2);
+		// $("#btn-group-thermostat").children().removeClass('active');			
+	  // thermo.init();
     }
 	  
 		  $('.form-signout').on('submit',function(e) {
@@ -405,9 +402,9 @@ $('.form-signin').on('submit',function(e) {
 	  var thist = new temp_hist(pageCfg);
 		$("#range-btns-cont-1").children().removeClass('active');			
 	  thist.init();
-	  var thermo = new thermostat_button(pageCfg2);
-		$("#btn-group-thermostat").children().removeClass('active');			
-	  thermo.init();
+	  // var thermo = new thermostat_button(pageCfg2);
+		// $("#btn-group-thermostat").children().removeClass('active');			
+	  // thermo.init();
 
 			        },
 			        onFailure: function(err) {

@@ -48,7 +48,7 @@ var paramsdygraph = {
 	},
     ExpressionAttributeValues: {
         ":therm": {
-		S: "Thermostat_01"
+		S: "5C:CF:7F:13:2B:55"
 	},
 	":dt1": {
 		N: startTimeStamp.toString()
@@ -76,12 +76,16 @@ dynamodb.query(paramsdygraph, function(err, data) {
 //         console.log(JSON.stringify(data, null, 3));
 	credentialtryflag = true;
        data.Items.forEach(function(item) {
+         if (item.temp != null && item.humidity != null) {
          // curtime3 = moment.utc(item.Date.toString(), "YYYYMMDDHHmmss");
          curtime3 = moment.utc(item.Date.N, "YYYYMMDDHHmmss");
          curtime3.local();
 	       // var b = parseFloat(item.temp.N);
          // dataPoints.push({x: new Date(curtime3.format("YYYY/MM/DD HH:mm:ss")), temp: parseFloat(item.temp.N), humidity: parseFloat(item.humidity.N), heaterState: parseFloat(item.heaterState.N), pidOutput: parseFloat(item.pidOutput.N)});
-         dataPoints.push({x: curtime3, temp: parseFloat(item.temp.N), humidity: parseFloat(item.humidity.N), heaterState: parseFloat(item.heaterState.N), pidOutput: parseFloat(item.pidOutput.N)});
+        //  dataPoints.push({x: curtime3, temp: parseFloat(item.temp.N), humidity: parseFloat(item.humidity.N), heaterState: parseFloat(item.heaterState.N), pidOutput: parseFloat(item.pidOutput.N)});
+        //  console.log(item);
+         dataPoints.push({x: curtime3, temp: parseFloat(item.temp.N), humidity: parseFloat(item.humidity.N)});
+         }
        });
 	dataPoints = dataPoints.reverse();
 	that._onDataLoad.call(that, dataLoadReq, dataPoints);
