@@ -226,6 +226,7 @@ AWS.config.region = 'us-east-1'; // Region
 <!-- }); -->
 // AWS.config.credentials = new AWS.Credentials(accessKeyId, secreteAccessKey, sessionToken);
 // AWS.config.region = 'us-west-1'; // Region
+var position;
 var dynamodb;
 var sendtopic;
 var msgcontent;
@@ -311,6 +312,9 @@ var validsession = false;
 
 // var dynamodb = dyanmo.DocumentClient();
   $(document).ready(function () {
+	navigator.geolocation.getCurrentPosition(function (pos) {
+	position = pos;
+	console.log(position);
 	 <!-- var dynamodb; --> 
 	document.addEventListener('visibilitychange', function () {
 		if (document.visibilityState == 'hidden'){
@@ -429,6 +433,7 @@ $('.form-signin').on('submit',function(e) {
 			        }
 			    });
 		    });
+	});
   });
 
 </script>

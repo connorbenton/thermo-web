@@ -254,6 +254,31 @@
 		
 
 		if (!this.graph || recreateDygraph) {
+
+	//navigator.geolocation.getCurrentPosition(success,error);
+
+	//  function error() {
+	//    console.log("Unable to retrieve your location");
+
+	//		var graphCfg = {
+	//			axes: axes,
+	//			// labels: labels,
+        //// ylabel: 'Temperature (F)',
+	//			showRangeSelector: false,
+	//			// interactionModel: Dygraph.Interaction.defaultModel,
+	//			connectSeparatedPoints: true,
+	//			dateWindow: [detailStartDateTm.getTime(), detailEndDateTm.getTime()],
+	//			// drawCallback: $.proxy(this._onDyDrawCallback, this),
+	//			zoomCallback: $.proxy(this._onDyZoomCallback, this),
+	//			digitsAfterDecimal: 2,
+	//			// labelsDivWidth: "275"
+
+	//  };
+	//}
+	
+	//function success(position) {
+	    var latitude  = position.coords.latitude;
+	    var longitude = position.coords.longitude;
 			var graphCfg = {
 				axes: axes,
 				// labels: labels,
@@ -266,7 +291,10 @@
 				zoomCallback: $.proxy(this._onDyZoomCallback, this),
 				digitsAfterDecimal: 2,
 				// labelsDivWidth: "275"
+
 				          underlayCallback: function(canvas, area, g) {
+
+
 
             canvas.fillStyle = "rgba(230, 230, 230, 1.0)";
 
@@ -291,16 +319,18 @@
 
             var w = minmom;
 	var wnext;					  
+
+
             // starting before sunrise is a special case
-            var times = SunCalc.getTimes(w, 37.7, -122.1);
+            var times = SunCalc.getTimes(w, latitude, longitude);
 		if (w < times.sunrise) {
 			highlight_period(w.valueOf(), times.sunrise.valueOf());
 		}
 
             while (w < max_data_x) {
 		    wnext = w.clone().add(1, 'day');
-            times = SunCalc.getTimes(w, 37.7, -122.1);
-            var times2 = SunCalc.getTimes(wnext, 37.7, -122.1);
+            times = SunCalc.getTimes(w, latitude, longitude);
+            var times2 = SunCalc.getTimes(wnext, latitude, longitude);
               var start_x_highlight = times.sunset.valueOf();
               var end_x_highlight = times2.sunrise.valueOf();
               // make sure we don't try to plot outside the graph
@@ -319,7 +349,8 @@
               w = wnext; 
             }
           }
-			};
+	};
+	//}
 
 			this.graph = new Dygraph(this.$graphCont.get(0), dyData, graphCfg);
 			this._setupRangeMouseHandling();
